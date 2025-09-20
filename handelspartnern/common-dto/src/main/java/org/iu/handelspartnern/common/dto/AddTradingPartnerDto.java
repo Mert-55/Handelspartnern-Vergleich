@@ -1,4 +1,4 @@
-package org.iu.handelspartnern.common;
+package org.iu.handelspartnern.common.dto;
 
 import org.iu.handelspartnern.common.entity.PartnerType;
 import java.util.Optional;
