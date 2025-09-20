@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingPartner Management</title>
+    <link rel="stylesheet" th:href="@{/css/github-style.css}">
+</head>
+
+<body>
+    <div class="github-container">
+        <!-- Header -->
+        <header class="github-header">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <span class="icon">🏢</span>
+                    TradingPartner Management
+                </h1>
+                <div class="header-actions">
+                    <button class="btn btn-success" onclick="showAddPartnerModal()">
+                        <span class="icon">➕</span>
+                        Neuer Partner
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Desktop Layout -->
+            <div class="desktop-layout">
+                <!-- Left Sidebar - Partner Details -->
+                <aside class="partner-details" id="partnerDetails">
+                    <div class="details-placeholder">
+                        <div class="placeholder-icon">👤</div>
+                        <h3>Partner auswählen</h3>
+                        <p>Wählen Sie einen Partner aus der Liste, um Details zu sehen.</p>
+                    </div>
+                </aside>
+
+                <!-- Right Content - Partner List -->
+                <section class="partner-list-section">
+                    <!-- Filters & Search -->
+                    <div class="list-controls">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Partner suchen...">
+                        </div>
+                        <div class="filter-controls">
+                            <select id="typeFilter">
+                                <option value="">Alle Typen</option>
+                                <option value="SUPPLIER">Lieferant</option>
+                                <option value="CUSTOMER">Kunde</option>
+                                <option value="PARTNER">Partner</option>
+                            </select>
+                            <select id="statusFilter">
+                                <option value="">Alle Status</option>
+                                <option value="ACTIVE">Aktiv</option>
+                                <option value="PENDING_APPROVAL">Wartend</option>
+                                <option value="INACTIVE">Inaktiv</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Partner Cards -->
+                    <div class="partner-cards" id="partnerCards">
+                        <!-- Partner cards will be populated here -->
+                        <div th:each="partner : ${partners}" class="partner-card"
+                            th:onclick="'selectPartner(' + ${partner.id} + ')'">
+
+                            <div class="card-header">
+                                <img th:src="${partner.corporateImageUrl}" th:alt="${partner.name}"
+                                    class="partner-avatar">
+                                <div class="card-info">
+                                    <h4 class="partner-name" th:text="${partner.name}">Partner Name</h4>
+                                    <div class="partner-meta">
+                                        <span class="partner-type" th:text="${partner.type.displayName}"
+                                            th:class="'type-' + ${partner.type.name().toLowerCase()}">Typ</span>
+                                        <span class="partner-status" th:text="${partner.status.displayName}"
+                                            th:class="'status-' + ${partner.status.name().toLowerCase()}">Status</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="financial-info">
+                                    <div class="financial-item">
+                                        <span class="label">Forderungen:</span>
+                                        <span class="amount positive"
+                                            th:text="'€' + ${#numbers.formatDecimal(partner.claims, 1, 2)}">€0.00</span>
+                                    </div>
+                                    <div class="financial-item">
+                                        <span class="label">Verbindlichkeiten:</span>
+                                        <span class="amount negative"
+                                            th:text="'€' + ${#numbers.formatDecimal(partner.payable, 1, 2)}">€0.00</span>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="last-modified"
+                                        th:text="'Geändert: ' + ${#temporals.format(partner.dateModified, 'dd.MM.yyyy')}">
+                                        Geändert: 01.01.2023
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Mobile Layout -->
+            <div class="mobile-layout">
+                <!-- Mobile content will be handled by CSS media queries -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Partner Modal -->
+    <div id="addPartnerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Neuen Partner hinzufügen</h3>
+                <button class="close-modal" onclick="hideAddPartnerModal()">&times;</button>
+            </div>
+            <form id="addPartnerForm" th:action="@{/partners}" method="post">
+                <div class="form-group">
+                    <label for="partnerName">Name *</label>
+                    <input type="text" id="partnerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="partnerType">Typ *</label>
+                    <select id="partnerType" name="partnerType" required>
+                        <option value="SUPPLIER">Lieferant</option>
+                        <option value="CUSTOMER">Kunde</option>
+                        <option value="PARTNER">Partner</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="partnerAbout">Beschreibung</label>
+                    <textarea id="partnerAbout" name="about" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideAddPartnerModal()">Abbrechen</button>
+                    <button type="submit" class="btn btn-success">Partner erstellen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/js/trading-partner.js}"></script>
+</body>
+
+</html>
