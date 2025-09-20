@@ -23,9 +23,9 @@
     <modules>
         <module>common-entity</module>
         <module>common-template</module>
+        <module>common-dto</module>
         <module>spring-web</module>
         <module>spark-web</module>
-        <module>common-dto</module>
     </modules>
 
     <dependencyManagement>
