@@ -1,0 +1,9 @@
+org\iu\handelspartnern\common\entity\converter\AddressConverter.class
+org\iu\handelspartnern\common\entity\converter\AddressConverter$1.class
+org\iu\handelspartnern\common\entity\converter\ContactConverter$1.class
+org\iu\handelspartnern\common\entity\TradingPartner.class
+org\iu\handelspartnern\common\entity\converter\ContactConverter.class
+org\iu\handelspartnern\common\entity\Contact.class
+org\iu\handelspartnern\common\entity\PartnerStatus.class
+org\iu\handelspartnern\common\entity\PartnerType.class
+org\iu\handelspartnern\common\entity\Address.class

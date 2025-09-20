@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Spring Boot web",
+            "mainClass": "org.iu.handelspartnern.spring.web",
+            "request": "launch",
+            "projectName": "hp-web-spring"
+        },
+        {
+            "type": "java",
+            "name": "Debug Spark Java Web",
+            "request": "launch", 
+            "mainClass": "org.iu.handelspartnern.spark.web",
+            "projectName": "hp-web-spark"
+        }
+    ]
+}
