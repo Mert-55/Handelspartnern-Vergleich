@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: spring-trading-partner-app
+    
+  datasource:
+    url: jdbc:postgresql://localhost:5432/trading_partners
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.iu.handelspartnern: DEBUG
+    org.springframework.web: DEBUG

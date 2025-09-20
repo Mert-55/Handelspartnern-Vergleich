@@ -1,0 +1,7 @@
+org\iu\handelspartnern\spark\routes\TradingPartnerRoutes.class
+org\iu\handelspartnern\spark\SparkWebApplication.class
+org\iu\handelspartnern\spark\service\TradingPartnerService.class
+org\iu\handelspartnern\spark\config\DatabaseConfig.class
+org\iu\handelspartnern\spark\routes\TradingPartnerRoutes$LocalDateTimeAdapter.class
+org\iu\handelspartnern\spark\config\ThymeleafConfig.class
+org\iu\handelspartnern\spark\repository\TradingPartnerRepository.class

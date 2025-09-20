@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingPartner Management</title>
+    <style>
+        /* GitHub-Style CSS for TradingPartner Management */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f6f8fa;
+            color: #24292f;
+            line-height: 1.5;
+        }
+
+        /* GitHub Container */
+        .github-container {
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .github-header {
+            background: white;
+            border-bottom: 1px solid #d0d7de;
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title .icon {
+            font-size: 28px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-success {
+            background: #1f883d;
+            color: white;
+            border-color: #1f883d;
+        }
+
+        .btn-success:hover {
+            background: #1a7f37;
+        }
+
+        .btn-secondary {
+            background: #f6f8fa;
+            color: #24292f;
+            border-color: #d0d7de;
+        }
+
+        .btn-secondary:hover {
+            background: #f3f4f6;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 24px;
+        }
+
+        /* Desktop Layout */
+        .desktop-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* Partner Details Sidebar */
+        .partner-details {
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .details-placeholder {
+            text-align: center;
+            color: #656d76;
+        }
+
+        .placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        /* Partner List Section */
+        .partner-list-section {
+            background: white;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* List Controls */
+        .list-controls {
+            padding: 16px;
+            border-bottom: 1px solid #d0d7de;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding: 8px 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-controls select {
+            padding: 8px 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+        }
+
+        /* Partner Cards */
+        .partner-cards {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .partner-card {
+            padding: 16px;
+            border-bottom: 1px solid #d0d7de;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .partner-card:hover {
+            background-color: #f6f8fa;
+        }
+
+        .partner-card:last-child {
+            border-bottom: none;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .partner-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .card-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .partner-meta {
+            display: flex;
+            gap: 8px;
+        }
+
+        .partner-type,
+        .partner-status {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Type Colors */
+        .type-supplier {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .type-customer {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .type-partner {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        /* Status Colors */
+        .status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-pending_approval {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-inactive {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .status-suspended {
+            background: #fecaca;
+            color: #dc2626;
+        }
+
+        /* Financial Info */
+        .financial-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .financial-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .financial-item .label {
+            font-size: 12px;
+            color: #656d76;
+        }
+
+        .amount.positive {
+            color: #1f883d;
+            font-weight: 600;
+        }
+
+        .amount.negative {
+            color: #cf222e;
+            font-weight: 600;
+        }
+
+        .card-footer {
+            border-top: 1px solid #f6f8fa;
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        .last-modified {
+            font-size: 12px;
+            color: #656d76;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #d0d7de;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #656d76;
+        }
+
+        .modal form {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            padding-top: 16px;
+            border-top: 1px solid #f6f8fa;
+        }
+
+        /* Mobile Layout */
+        .mobile-layout {
+            display: none;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .desktop-layout {
+                display: none;
+            }
+
+            .mobile-layout {
+                display: block;
+            }
+
+            .github-header {
+                padding: 12px 16px;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .partner-card {
+                padding: 12px;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+
+            .list-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-controls {
+                flex-wrap: wrap;
+            }
+
+            .filter-controls select {
+                flex: 1;
+            }
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+
+<body>
+    <div class="github-container">
+        <!-- Header -->
+        <header class="github-header">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <span class="icon">🏢</span>
+                    TradingPartner Management
+                </h1>
+                <div class="header-actions">
+                    <button class="btn btn-success" onclick="showAddPartnerModal()">
+                        <span class="icon">➕</span>
+                        Neuer Partner
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Desktop Layout -->
+            <div class="desktop-layout">
+                <!-- Left Sidebar - Partner Details -->
+                <aside class="partner-details" id="partnerDetails">
+                    <div class="details-placeholder">
+                        <div class="placeholder-icon">👤</div>
+                        <h3>Partner auswählen</h3>
+                        <p>Wählen Sie einen Partner aus der Liste, um Details zu sehen.</p>
+                    </div>
+                </aside>
+
+                <!-- Right Content - Partner List -->
+                <section class="partner-list-section">
+                    <!-- Filters & Search -->
+                    <div class="list-controls">
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Partner suchen...">
+                        </div>
+                        <div class="filter-controls">
+                            <select id="typeFilter">
+                                <option value="">Alle Typen</option>
+                                <option value="SUPPLIER">Lieferant</option>
+                                <option value="CUSTOMER">Kunde</option>
+                                <option value="PARTNER">Partner</option>
+                            </select>
+                            <select id="statusFilter">
+                                <option value="">Alle Status</option>
+                                <option value="ACTIVE">Aktiv</option>
+                                <option value="PENDING_APPROVAL">Wartend</option>
+                                <option value="INACTIVE">Inaktiv</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Partner Cards -->
+                    <div class="partner-cards" id="partnerCards">
+                        <!-- Partner cards will be populated here -->
+                        <div th:each="partner : ${partners}" class="partner-card"
+                            th:onclick="'selectPartner(' + ${partner.id} + ')'">
+
+                            <div class="card-header">
+                                <img th:src="${partner.corporateImageUrl}" th:alt="${partner.name}"
+                                    class="partner-avatar">
+                                <div class="card-info">
+                                    <h4 class="partner-name" th:text="${partner.name}">Partner Name</h4>
+                                    <div class="partner-meta">
+                                        <span class="partner-type" th:text="${partner.type.displayName}"
+                                            th:class="'type-' + ${partner.type.name().toLowerCase()}">Typ</span>
+                                        <span class="partner-status" th:text="${partner.status.displayName}"
+                                            th:class="'status-' + ${partner.status.name().toLowerCase()}">Status</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="financial-info">
+                                    <div class="financial-item">
+                                        <span class="label">Forderungen:</span>
+                                        <span class="amount positive"
+                                            th:text="'€' + ${#numbers.formatDecimal(partner.claims, 1, 2)}">€0.00</span>
+                                    </div>
+                                    <div class="financial-item">
+                                        <span class="label">Verbindlichkeiten:</span>
+                                        <span class="amount negative"
+                                            th:text="'€' + ${#numbers.formatDecimal(partner.payable, 1, 2)}">€0.00</span>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="last-modified"
+                                        th:text="'Geändert: ' + ${#temporals.format(partner.dateModified, 'dd.MM.yyyy')}">
+                                        Geändert: 01.01.2023
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Mobile Layout -->
+            <div class="mobile-layout">
+                <!-- Mobile content will be handled by CSS media queries -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Partner Modal -->
+    <div id="addPartnerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Neuen Partner hinzufügen</h3>
+                <button class="close-modal" onclick="hideAddPartnerModal()">&times;</button>
+            </div>
+            <form id="addPartnerForm" th:action="@{partners}" method="post">
+                <div class="form-group">
+                    <label for="partnerName">Name *</label>
+                    <input type="text" id="partnerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="partnerType">Typ *</label>
+                    <select id="partnerType" name="partnerType" required>
+                        <option value="SUPPLIER">Lieferant</option>
+                        <option value="CUSTOMER">Kunde</option>
+                        <option value="PARTNER">Partner</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="partnerAbout">Beschreibung</label>
+                    <textarea id="partnerAbout" name="about" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideAddPartnerModal()">Abbrechen</button>
+                    <button type="submit" class="btn btn-success">Partner erstellen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Trading Partner JavaScript Functions
+
+        function selectPartner(partnerId) {
+            // Highlight selected card
+            document.querySelectorAll('.partner-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            event.currentTarget.classList.add('selected');
+
+            // Load partner details
+            loadPartnerDetails(partnerId);
+        }
+
+        function loadPartnerDetails(partnerId) {
+            // This would typically make an AJAX request to get partner details
+            // For now, we'll show a placeholder
+            const detailsDiv = document.getElementById('partnerDetails');
+
+            detailsDiv.innerHTML = `
+        <div class="partner-detail-card">
+            <div class="detail-header">
+                <h3>Partner Details</h3>
+                <div class="detail-actions">
+                    <button class="btn btn-secondary">Bearbeiten</button>
+                </div>
+            </div>
+            <div class="detail-content">
+                <p>Details für Partner ID: ${partnerId}</p>
+                <p>Details werden hier geladen...</p>
+            </div>
+        </div>
+    `;
+        }
+
+        function showAddPartnerModal() {
+            document.getElementById('addPartnerModal').style.display = 'block';
+        }
+
+        function hideAddPartnerModal() {
+            document.getElementById('addPartnerModal').style.display = 'none';
+            document.getElementById('addPartnerForm').reset();
+        }
+
+        // Search and Filter Functions
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const typeFilter = document.getElementById('typeFilter');
+            const statusFilter = document.getElementById('statusFilter');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', filterPartners);
+            }
+
+            if (typeFilter) {
+                typeFilter.addEventListener('change', filterPartners);
+            }
+
+            if (statusFilter) {
+                statusFilter.addEventListener('change', filterPartners);
+            }
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function (event) {
+                const modal = document.getElementById('addPartnerModal');
+                if (event.target === modal) {
+                    hideAddPartnerModal();
+                }
+            });
+        });
+
+        function filterPartners() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const cards = document.querySelectorAll('.partner-card');
+
+            cards.forEach(card => {
+                const name = card.querySelector('.partner-name').textContent.toLowerCase();
+                const type = card.querySelector('.partner-type').classList.toString();
+                const status = card.querySelector('.partner-status').classList.toString();
+
+                const matchesSearch = name.includes(searchTerm);
+                const matchesType = !typeFilter || type.includes(typeFilter.toLowerCase());
+                const matchesStatus = !statusFilter || status.includes(statusFilter.toLowerCase());
+
+                if (matchesSearch && matchesType && matchesStatus) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
