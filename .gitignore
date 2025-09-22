@@ -42,9 +42,11 @@ buildNumber.properties
 *.ipr
 .vscode/settings.json
 
-# Research Data & Metrics
+# Research Data & Metrics (Generated files)
 metrics/
 research-data/
+research-dashboard/
 screenshots/
 *.csv
 reports/
+exports/
