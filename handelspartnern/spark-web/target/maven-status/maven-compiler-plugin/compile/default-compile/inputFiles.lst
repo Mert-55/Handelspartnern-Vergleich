@@ -1,6 +1,6 @@
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/repository/TradingPartnerRepository.java
 /home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/SparkWebApplication.java
 /home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/config/DatabaseConfig.java
-/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/config/ThymeleafConfig.java
-/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/repository/TradingPartnerRepository.java
-/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/routes/TradingPartnerRoutes.java
 /home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/service/TradingPartnerService.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/config/ThymeleafConfig.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/spark-web/src/main/java/org/iu/handelspartnern/spark/routes/TradingPartnerRoutes.java

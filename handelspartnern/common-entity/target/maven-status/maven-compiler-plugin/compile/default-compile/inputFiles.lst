@@ -1,7 +1,7 @@
-/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/Address.java
 /home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/Contact.java
-/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/PartnerStatus.java
-/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/PartnerType.java
-/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/TradingPartner.java
-/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/converter/AddressConverter.java
 /home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/converter/ContactConverter.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/PartnerStatus.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/converter/AddressConverter.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/PartnerType.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/Address.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/TradingPartner.java
