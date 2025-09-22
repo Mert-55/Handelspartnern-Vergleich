@@ -1,7 +1,7 @@
-C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\TradingPartner.java
-C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\PartnerType.java
-C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\converter\AddressConverter.java
-C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\PartnerStatus.java
-C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\Contact.java
-C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\Address.java
-C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\converter\ContactConverter.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/Address.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/Contact.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/PartnerStatus.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/PartnerType.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/TradingPartner.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/converter/AddressConverter.java
+/home/runner/work/Handelspartnern-Vergleich/Handelspartnern-Vergleich/handelspartnern/common-entity/src/main/java/org/iu/handelspartnern/common/entity/converter/ContactConverter.java
