@@ -13,10 +13,14 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import org.iu.handelspartnern.common.entity.converter.AddressConverter;
 import org.iu.handelspartnern.common.entity.converter.ContactConverter;
+import org.iu.handelspartnern.common.entity.converter.FinancialEntryConverter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "trading_partners")
@@ -68,14 +72,19 @@ public class TradingPartner {
     @Convert(converter = ContactConverter.class)
     private List<Contact> contacts;
 
+    @Column(columnDefinition = "TEXT")
+    @Convert(converter = FinancialEntryConverter.class)
+    private List<FinancialEntry> financialEntries;
+
     // Default Constructor
     public TradingPartner() {
         this.name = "Unbenannt";
         this.paymentTerms = "Net 30";
         this.status = PartnerStatus.ACTIVE;
         this.type = PartnerType.SUPPLIER;
-        this.addresses = Collections.emptyList();
-        this.contacts = Collections.emptyList();
+        this.addresses = new ArrayList<>();
+        this.contacts = new ArrayList<>();
+        this.financialEntries = new ArrayList<>();
         this.claims = BigDecimal.ZERO;
         this.payable = BigDecimal.ZERO;
     }
@@ -182,7 +191,10 @@ public class TradingPartner {
     }
 
     public List<Address> getAddresses() {
-        return addresses != null ? addresses : Collections.emptyList();
+        if (addresses == null) {
+            addresses = new ArrayList<>();
+        }
+        return addresses;
     }
 
     public void setAddresses(List<Address> addresses) {
@@ -190,10 +202,333 @@ public class TradingPartner {
     }
 
     public List<Contact> getContacts() {
-        return contacts != null ? contacts : Collections.emptyList();
+        if (contacts == null) {
+            contacts = new ArrayList<>();
+        }
+        return contacts;
     }
 
     public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public List<FinancialEntry> getFinancialEntries() {
+        if (financialEntries == null) {
+            financialEntries = new ArrayList<>();
+        }
+        return financialEntries;
+    }
+
+    public void setFinancialEntries(List<FinancialEntry> financialEntries) {
+        this.financialEntries = financialEntries;
+        recalculateFinancials();
+    }
+
+    public void addFinancialEntry(FinancialEntry entry) {
+        getFinancialEntries().add(entry);
+        recalculateFinancials();
+    }
+
+    // ===== ALIAS METHODS FOR COMPATIBILITY =====
+
+    // For backward compatibility with service layer that expects created/updated
+    public LocalDateTime getCreated() {
+        return dateCreated;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.dateCreated = created;
+    }
+
+    public LocalDateTime getUpdated() {
+        return dateModified;
+    }
+
+    public void setUpdated(LocalDateTime updated) {
+        this.dateModified = updated;
+    }
+
+    // ===== STRING-BASED CONTACT/ADDRESS METHODS =====
+
+    // Convert contacts list to string representation
+    public String getContactsAsString() {
+        if (getContacts().isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        List<Contact> contactList = getContacts();
+        for (int i = 0; i < contactList.size(); i++) {
+            Contact contact = contactList.get(i);
+            if (contact != null) {
+                if (contact.getEmail() != null && !contact.getEmail().trim().isEmpty()) {
+                    sb.append("E-Mail: ").append(contact.getEmail().trim()).append("\n");
+                }
+                if (contact.getPhone() != null && !contact.getPhone().trim().isEmpty()) {
+                    sb.append("Telefon: ").append(contact.getPhone().trim()).append("\n");
+                }
+                if (contact.getName() != null && !contact.getName().trim().isEmpty()) {
+                    sb.append("Ansprechpartner: ").append(contact.getName().trim()).append("\n");
+                }
+                if (contact.getRole() != null && !contact.getRole().trim().isEmpty()) {
+                    sb.append("Abteilung: ").append(contact.getRole().trim());
+                }
+                if (i < contactList.size() - 1) {
+                    sb.append("\n---\n");
+                }
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    // Set contacts from string representation
+    public void setContactsAsString(String contactsString) {
+        getContacts().clear();
+        if (contactsString == null || contactsString.trim().isEmpty()) {
+            return;
+        }
+
+        String[] blocks = contactsString.split("\n---\n");
+        for (String block : blocks) {
+            Contact contact = new Contact();
+            String[] lines = block.split("\n");
+            for (String rawLine : lines) {
+                String line = rawLine.trim();
+                if (line.startsWith("E-Mail:")) {
+                    contact.setEmail(line.substring(7).trim());
+                } else if (line.startsWith("Telefon:")) {
+                    contact.setPhone(line.substring(8).trim());
+                } else if (line.startsWith("Ansprechpartner:")) {
+                    contact.setName(line.substring(15).trim());
+                } else if (line.startsWith("Abteilung:")) {
+                    contact.setRole(line.substring(10).trim());
+                }
+            }
+            if ((contact.getName() != null && !contact.getName().isBlank()) ||
+                    (contact.getEmail() != null && !contact.getEmail().isBlank()) ||
+                    (contact.getPhone() != null && !contact.getPhone().isBlank())) {
+                getContacts().add(contact);
+            }
+        }
+    }
+
+    // Convert addresses list to string representation
+    public String getAddressesAsString() {
+        if (getAddresses().isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        List<Address> addressList = getAddresses();
+        for (int i = 0; i < addressList.size(); i++) {
+            Address address = addressList.get(i);
+            if (address != null) {
+                if (address.getStreet() != null && !address.getStreet().trim().isEmpty()) {
+                    sb.append(address.getStreet().trim()).append("\n");
+                }
+                if (address.getZipCode() != null && !address.getZipCode().trim().isEmpty()) {
+                    sb.append(address.getZipCode().trim());
+                    if (address.getCity() != null && !address.getCity().trim().isEmpty()) {
+                        sb.append(" ").append(address.getCity().trim());
+                    }
+                    sb.append("\n");
+                } else if (address.getCity() != null && !address.getCity().trim().isEmpty()) {
+                    sb.append(address.getCity().trim()).append("\n");
+                }
+                if (address.getCountry() != null && !address.getCountry().trim().isEmpty()) {
+                    sb.append(address.getCountry().trim());
+                }
+                if (i < addressList.size() - 1) {
+                    sb.append("\n---\n");
+                }
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    // Set addresses from string representation
+    public void setAddressesAsString(String addressesString) {
+        getAddresses().clear();
+        if (addressesString == null || addressesString.trim().isEmpty()) {
+            return;
+        }
+
+        String[] blocks = addressesString.split("\n---\n");
+        for (String block : blocks) {
+            Address address = new Address();
+            String[] lines = block.split("\n");
+            for (String rawLine : lines) {
+                String line = rawLine.trim();
+                if (line.toLowerCase().startsWith("typ:")) {
+                    address.setType(line.substring(4).trim());
+                    continue;
+                }
+
+                if (address.getStreet() == null) {
+                    address.setStreet(line);
+                } else if (address.getZipCode() == null) {
+                    String[] parts = line.split(" ", 2);
+                    if (parts.length == 2) {
+                        address.setZipCode(parts[0]);
+                        address.setCity(parts[1]);
+                    } else {
+                        address.setCity(line);
+                    }
+                } else if (address.getCountry() == null) {
+                    address.setCountry(line);
+                }
+            }
+
+            if ((address.getStreet() != null && !address.getStreet().isBlank()) ||
+                    (address.getCity() != null && !address.getCity().isBlank())) {
+                getAddresses().add(address);
+            }
+        }
+    }
+
+    public FinancialOverview getFinancialOverview() {
+        recalculateFinancials();
+
+        BigDecimal openClaims = BigDecimal.ZERO;
+        BigDecimal settledClaims = BigDecimal.ZERO;
+        BigDecimal openPayables = BigDecimal.ZERO;
+        BigDecimal settledPayables = BigDecimal.ZERO;
+
+        for (FinancialEntry entry : getFinancialEntries()) {
+            if (entry.getAmount() == null) {
+                continue;
+            }
+
+            if (FinancialEntryType.CLAIM.equals(entry.getType())) {
+                if (entry.isSettled()) {
+                    settledClaims = settledClaims.add(entry.getAmount());
+                } else {
+                    openClaims = openClaims.add(entry.getAmount());
+                }
+            } else if (FinancialEntryType.PAYABLE.equals(entry.getType())) {
+                if (entry.isSettled()) {
+                    settledPayables = settledPayables.add(entry.getAmount());
+                } else {
+                    openPayables = openPayables.add(entry.getAmount());
+                }
+            }
+        }
+
+        List<FinancialEntryView> recent = getFinancialEntries().stream()
+                .sorted(Comparator.comparing(FinancialEntry::getDate, Comparator.nullsLast(LocalDate::compareTo))
+                        .reversed())
+                .limit(5)
+                .map(FinancialEntryView::from)
+                .collect(Collectors.toList());
+
+        return new FinancialOverview(openClaims, settledClaims, openPayables, settledPayables,
+                getFinancialEntries().size(), recent);
+    }
+
+    public void recalculateFinancials() {
+        BigDecimal openClaims = BigDecimal.ZERO;
+        BigDecimal openPayables = BigDecimal.ZERO;
+
+        for (FinancialEntry entry : getFinancialEntries()) {
+            if (entry.getAmount() == null) {
+                continue;
+            }
+
+            if (FinancialEntryType.CLAIM.equals(entry.getType()) && !entry.isSettled()) {
+                openClaims = openClaims.add(entry.getAmount());
+            }
+
+            if (FinancialEntryType.PAYABLE.equals(entry.getType()) && !entry.isSettled()) {
+                openPayables = openPayables.add(entry.getAmount());
+            }
+        }
+
+        this.claims = openClaims;
+        this.payable = openPayables;
+    }
+
+    public static class FinancialOverview {
+        private final BigDecimal openClaims;
+        private final BigDecimal settledClaims;
+        private final BigDecimal openPayables;
+        private final BigDecimal settledPayables;
+        private final int transactionCount;
+        private final List<FinancialEntryView> recentTransactions;
+
+        public FinancialOverview(BigDecimal openClaims, BigDecimal settledClaims, BigDecimal openPayables,
+                BigDecimal settledPayables, int transactionCount, List<FinancialEntryView> recentTransactions) {
+            this.openClaims = openClaims;
+            this.settledClaims = settledClaims;
+            this.openPayables = openPayables;
+            this.settledPayables = settledPayables;
+            this.transactionCount = transactionCount;
+            this.recentTransactions = recentTransactions;
+        }
+
+        public BigDecimal getOpenClaims() {
+            return openClaims;
+        }
+
+        public BigDecimal getSettledClaims() {
+            return settledClaims;
+        }
+
+        public BigDecimal getOpenPayables() {
+            return openPayables;
+        }
+
+        public BigDecimal getSettledPayables() {
+            return settledPayables;
+        }
+
+        public int getTransactionCount() {
+            return transactionCount;
+        }
+
+        public List<FinancialEntryView> getRecentTransactions() {
+            return recentTransactions;
+        }
+    }
+
+    public static class FinancialEntryView {
+        private final String purpose;
+        private final String statusLabel;
+        private final FinancialEntryType type;
+        private final BigDecimal amount;
+        private final String dateFormatted;
+
+        private FinancialEntryView(String purpose, String statusLabel, FinancialEntryType type, BigDecimal amount,
+                String dateFormatted) {
+            this.purpose = purpose;
+            this.statusLabel = statusLabel;
+            this.type = type;
+            this.amount = amount;
+            this.dateFormatted = dateFormatted;
+        }
+
+        public static FinancialEntryView from(FinancialEntry entry) {
+            return new FinancialEntryView(entry.getPurpose(), entry.getStatusLabel(), entry.getType(),
+                    entry.getAmount(), entry.getDateFormatted());
+        }
+
+        public String getPurpose() {
+            return purpose;
+        }
+
+        public String getStatusLabel() {
+            return statusLabel;
+        }
+
+        public FinancialEntryType getType() {
+            return type;
+        }
+
+        public BigDecimal getAmount() {
+            return amount;
+        }
+
+        public String getDateFormatted() {
+            return dateFormatted;
+        }
     }
 }

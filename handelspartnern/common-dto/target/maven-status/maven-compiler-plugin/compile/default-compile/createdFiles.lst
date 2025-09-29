@@ -1,2 +1,3 @@
 org\iu\handelspartnern\common\dto\TradingPartnerListDto.class
+org\iu\handelspartnern\common\dto\TradingPartnerFormDto.class
 org\iu\handelspartnern\common\dto\AddTradingPartnerDto.class

@@ -1,5 +1,9 @@
 C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\TradingPartner.java
+C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\converter\FinancialEntryConverter.java
+C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\FinancialEntry.java
+C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\FinancialEntryStatus.java
 C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\PartnerType.java
+C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\FinancialEntryType.java
 C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\converter\AddressConverter.java
 C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\PartnerStatus.java
 C:\Users\padiamon\vsc\Handelspartnern-Vergleich\handelspartnern\common-entity\src\main\java\org\iu\handelspartnern\common\entity\Contact.java
