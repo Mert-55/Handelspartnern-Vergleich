@@ -2,3 +2,4 @@ org/iu/handelspartnern/spring/service/TradingPartnerService.class
 org/iu/handelspartnern/spring/repository/TradingPartnerRepository.class
 org/iu/handelspartnern/spring/SpringWebApplication.class
 org/iu/handelspartnern/spring/controller/TradingPartnerController.class
+org\iu\handelspartnern\spring\controller\ApiController.class

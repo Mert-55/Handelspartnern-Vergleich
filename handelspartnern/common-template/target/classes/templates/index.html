@@ -4,660 +4,1591 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradingPartner Management</title>
+    <title>Handelspartner Verwaltung</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👔</text></svg>">
+    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom GitHub-like styling -->
     <style>
-        /* GitHub-Style CSS for TradingPartner Management */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --github-canvas-default: #ffffff;
+            --github-canvas-subtle: #f6f8fa;
+            --github-border-default: #d0d7de;
+            --github-border-muted: #d1d9e0;
+            --github-fg-default: #1f2328;
+            --github-fg-muted: #656d76;
+            --github-accent-emphasis: #0969da;
+            --github-success-emphasis: #1a7f37;
+            --github-danger-emphasis: #d1242f;
+            --github-attention-emphasis: #9a6700;
+            --github-shadow-small: 0 1px 0 rgba(31, 35, 40, 0.04);
+            --github-shadow-medium: 0 3px 6px rgba(140, 149, 159, 0.15);
+            --github-shadow-large: 0 8px 24px rgba(140, 149, 159, 0.2);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f6f8fa;
-            color: #24292f;
-            line-height: 1.5;
+            background: var(--github-canvas-subtle);
+            color: var(--github-fg-default);
         }
 
-        /* GitHub Container */
-        .github-container {
-            min-height: 100vh;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* Header */
-        .github-header {
-            background: white;
-            border-bottom: 1px solid #d0d7de;
-            padding: 16px 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-title {
-            font-size: 24px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .header-title .icon {
-            font-size: 28px;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 8px 16px;
+        .github-box {
+            background: var(--github-canvas-default);
+            border: 1px solid var(--github-border-default);
             border-radius: 6px;
-            border: 1px solid transparent;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
+            box-shadow: var(--github-shadow-small);
+        }
+
+        .github-box-header {
+            background: var(--github-canvas-subtle);
+            border-bottom: 1px solid var(--github-border-default);
+            border-radius: 6px 6px 0 0;
+            padding: 16px;
+        }
+
+        .btn-github {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 8px;
+            padding: 5px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            border-radius: 6px;
+            border: 1px solid;
+            transition: all 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+            cursor: pointer;
             text-decoration: none;
-            transition: all 0.2s ease;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .btn-github:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--github-accent-emphasis);
+            border-color: rgba(31, 35, 40, 0.15);
+            color: #fff;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0860ca;
+            box-shadow: var(--github-shadow-medium);
         }
 
         .btn-success {
-            background: #1f883d;
-            color: white;
-            border-color: #1f883d;
+            background: var(--github-success-emphasis);
+            border-color: rgba(31, 35, 40, 0.15);
+            color: #fff;
         }
 
-        .btn-success:hover {
+        .btn-success:hover:not(:disabled) {
             background: #1a7f37;
+            box-shadow: var(--github-shadow-medium);
+        }
+
+        .btn-danger {
+            background: var(--github-danger-emphasis);
+            border-color: rgba(31, 35, 40, 0.15);
+            color: #fff;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #c93c37;
+            box-shadow: var(--github-shadow-medium);
         }
 
         .btn-secondary {
-            background: #f6f8fa;
-            color: #24292f;
-            border-color: #d0d7de;
+            background: var(--github-canvas-default);
+            border-color: var(--github-border-default);
+            color: var(--github-fg-default);
         }
 
-        .btn-secondary:hover {
-            background: #f3f4f6;
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--github-canvas-subtle);
+            border-color: var(--github-border-muted);
+            box-shadow: var(--github-shadow-medium);
         }
 
-        /* Main Content */
-        .main-content {
-            padding: 24px;
+        .form-control {
+            background: var(--github-canvas-default);
+            border: 1px solid var(--github-border-default);
+            border-radius: 6px;
+            color: var(--github-fg-default);
+            font-size: 14px;
+            line-height: 20px;
+            padding: 5px 12px;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
 
-        /* Desktop Layout */
-        .desktop-layout {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 24px;
-            min-height: calc(100vh - 120px);
+        .form-control:focus {
+            border-color: var(--github-accent-emphasis);
+            box-shadow: inset 0 1px 0 rgba(208, 215, 222, 0.2), 0 0 0 3px rgba(9, 105, 218, 0.3);
+            outline: none;
         }
 
-        /* Partner Details Sidebar */
-        .partner-details {
-            background: white;
-            border: 1px solid #d0d7de;
-            border-radius: 8px;
-            padding: 24px;
-            height: fit-content;
-            position: sticky;
-            top: 100px;
+        .form-control:invalid {
+            border-color: var(--github-danger-emphasis);
         }
 
-        .details-placeholder {
+        .label {
+            color: var(--github-fg-default);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 20px;
+        }
+
+        .text-small {
+            color: var(--github-fg-muted);
+            font-size: 12px;
+        }
+
+        .state-label {
+            border-radius: 2em;
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 18px;
+            padding: 0 7px;
             text-align: center;
-            color: #656d76;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
-        .placeholder-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+        .state-open {
+            background: #dafbe1;
+            color: #1a7f37;
         }
 
-        /* Partner List Section */
-        .partner-list-section {
-            background: white;
-            border: 1px solid #d0d7de;
-            border-radius: 8px;
-            overflow: hidden;
+        .state-pending {
+            background: #fff8c5;
+            color: #9a6700;
         }
 
-        /* List Controls */
-        .list-controls {
-            padding: 16px;
-            border-bottom: 1px solid #d0d7de;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
+        .state-closed {
+            background: #f1f8ff;
+            color: #0969da;
         }
 
-        .search-box input {
-            padding: 8px 12px;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
-            width: 300px;
-            font-size: 14px;
+        .state-merged {
+            background: #f3e2fd;
+            color: #8250df;
         }
 
-        .filter-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .filter-controls select {
-            padding: 8px 12px;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
-            background: white;
-            font-size: 14px;
-        }
-
-        /* Partner Cards */
-        .partner-cards {
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .partner-card {
-            padding: 16px;
-            border-bottom: 1px solid #d0d7de;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .partner-card:hover {
-            background-color: #f6f8fa;
-        }
-
-        .partner-card:last-child {
-            border-bottom: none;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .partner-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 6px;
-            object-fit: cover;
-        }
-
-        .card-info h4 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .partner-meta {
-            display: flex;
-            gap: 8px;
-        }
-
-        .partner-type,
-        .partner-status {
-            padding: 2px 8px;
-            border-radius: 12px;
+        .counter {
+            background: var(--github-canvas-subtle);
+            border-radius: 2em;
+            color: var(--github-fg-default);
+            display: inline-block;
             font-size: 12px;
             font-weight: 500;
+            line-height: 1;
+            min-width: 16px;
+            padding: 2px 5px;
+            text-align: center;
         }
 
-        /* Type Colors */
-        .type-supplier {
-            background: #dbeafe;
-            color: #1e40af;
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
         }
 
-        .type-customer {
-            background: #dcfce7;
-            color: #15803d;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .type-partner {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        /* Status Colors */
-        .status-active {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .status-pending_approval {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .status-inactive {
-            background: #f3f4f6;
-            color: #6b7280;
-        }
-
-        .status-suspended {
-            background: #fecaca;
-            color: #dc2626;
-        }
-
-        /* Financial Info */
-        .financial-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-
-        .financial-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .financial-item .label {
+        .btn-sm {
+            padding: 3px 8px;
             font-size: 12px;
-            color: #656d76;
+            line-height: 16px;
         }
 
-        .amount.positive {
-            color: #1f883d;
-            font-weight: 600;
-        }
-
-        .amount.negative {
-            color: #cf222e;
-            font-weight: 600;
-        }
-
-        .card-footer {
-            border-top: 1px solid #f6f8fa;
-            padding-top: 8px;
-            margin-top: 8px;
-        }
-
-        .last-modified {
-            font-size: 12px;
-            color: #656d76;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 0;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-        }
-
-        .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #d0d7de;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h3 {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #656d76;
-        }
-
-        .modal form {
-            padding: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-            padding-top: 16px;
-            border-top: 1px solid #f6f8fa;
-        }
-
-        /* Mobile Layout */
-        .mobile-layout {
+        .htmx-indicator {
             display: none;
         }
 
-        /* Media Queries */
-        @media (max-width: 768px) {
-            .desktop-layout {
-                display: none;
+        .htmx-request .htmx-indicator {
+            display: inline;
+        }
+
+        .htmx-request.htmx-indicator {
+            display: inline;
+        }
+
+        .flash-highlight {
+            animation: highlightFade 1.2s ease-out;
+        }
+
+        @keyframes highlightFade {
+            from {
+                box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.3);
+                background-color: rgba(9, 105, 218, 0.08);
             }
 
-            .mobile-layout {
-                display: block;
-            }
-
-            .github-header {
-                padding: 12px 16px;
-            }
-
-            .header-title {
-                font-size: 20px;
-            }
-
-            .main-content {
-                padding: 16px;
-            }
-
-            .partner-card {
-                padding: 12px;
-            }
-
-            .search-box input {
-                width: 100%;
-            }
-
-            .list-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-controls {
-                flex-wrap: wrap;
-            }
-
-            .filter-controls select {
-                flex: 1;
+            to {
+                box-shadow: none;
+                background-color: transparent;
             }
         }
     </style>
-    <script>
-
-    </script>
 </head>
 
-<body>
-    <div class="github-container">
+<body class="min-h-screen">
+    <!-- Main Container -->
+    <div class="max-w-7xl mx-auto p-4">
+
         <!-- Header -->
-        <header class="github-header">
-            <div class="header-content">
-                <h1 class="header-title">
-                    <span class="icon">🏢</span>
-                    TradingPartner Management
-                </h1>
-                <div class="header-actions">
-                    <button class="btn btn-success" onclick="showAddPartnerModal()">
-                        <span class="icon">➕</span>
-                        Neuer Partner
+        <header class="github-box sticky top-0 z-40 mb-6">
+            <div class="px-4 py-4 sm:px-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                            HP
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-semibold text-gray-900">Handelspartner Verwaltung</h1>
+                            <p class="text-small">Verwalten Sie Ihre Geschäftsbeziehungen</p>
+                        </div>
+                    </div>
+
+                    <!-- Add Partner Button -->
+                    <button hx-get="partners/new" hx-target="#modal-container" hx-swap="innerHTML"
+                        class="btn-github btn-success">
+                        <i class="fas fa-plus"></i>
+                        <span class="hidden sm:inline">Neuer Partner</span>
                     </button>
                 </div>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Desktop Layout -->
-            <div class="desktop-layout">
-                <!-- Left Sidebar - Partner Details -->
-                <aside class="partner-details" id="partnerDetails">
-                    <div class="details-placeholder">
-                        <div class="placeholder-icon">👤</div>
-                        <h3>Partner auswählen</h3>
-                        <p>Wählen Sie einen Partner aus der Liste, um Details zu sehen.</p>
-                    </div>
-                </aside>
-
-                <!-- Right Content - Partner List -->
-                <section class="partner-list-section">
-                    <!-- Filters & Search -->
-                    <div class="list-controls">
-                        <div class="search-box">
-                            <input type="text" id="searchInput" placeholder="Partner suchen...">
+        <!-- Search & Filters -->
+        <div class="github-box mb-6">
+            <div class="github-box-header">
+                <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                    <i class="fas fa-filter"></i>
+                    Filter & Suche
+                </h3>
+            </div>
+            <div class="p-4">
+                <div class="space-y-4">
+                    <!-- Search -->
+                    <div>
+                        <div class="relative">
+                            <i
+                                class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input type="text" id="search-input" name="search" placeholder="Partner suchen..."
+                                hx-get="partners" hx-trigger="input changed delay:300ms, search"
+                                hx-target="#partner-list-container" hx-include="[name='type'], [name='status']"
+                                hx-indicator="#search-loading" class="form-control w-full pl-10 pr-4">
                         </div>
-                        <div class="filter-controls">
-                            <select id="typeFilter">
+                        <div id="search-loading" class="htmx-indicator mt-2 text-center">
+                            <span class="text-small text-gray-500">
+                                <i class="fas fa-spinner fa-spin"></i> Suche läuft...
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="label block mb-2">Partner-Typ</label>
+                            <select name="type" id="type-filter" hx-get="partners" hx-trigger="change"
+                                hx-target="#partner-list-container" hx-include="[name='status'], [name='search']"
+                                class="form-control w-full">
                                 <option value="">Alle Typen</option>
                                 <option value="SUPPLIER">Lieferant</option>
                                 <option value="CUSTOMER">Kunde</option>
                                 <option value="PARTNER">Partner</option>
                             </select>
-                            <select id="statusFilter">
+                        </div>
+
+                        <div>
+                            <label class="label block mb-2">Status</label>
+                            <select name="status" id="status-filter" hx-get="partners" hx-trigger="change"
+                                hx-target="#partner-list-container" hx-include="[name='type'], [name='search']"
+                                class="form-control w-full">
                                 <option value="">Alle Status</option>
                                 <option value="ACTIVE">Aktiv</option>
                                 <option value="PENDING_APPROVAL">Wartend</option>
                                 <option value="INACTIVE">Inaktiv</option>
                             </select>
                         </div>
+
+                        <div class="flex items-end">
+                            <button type="button" onclick="clearAllFilters()" class="btn-github btn-secondary w-full">
+                                <i class="fas fa-times"></i>
+                                Filter zurücksetzen
+                            </button>
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Partner Cards -->
-                    <div class="partner-cards" id="partnerCards">
-                        <!-- Partner cards will be populated here -->
-                        <div th:each="partner : ${partners}" class="partner-card"
-                            th:onclick="'selectPartner(' + ${partner.id} + ')'">
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 gap-6">
 
-                            <div class="card-header">
-                                <img th:src="${partner.corporateImageUrl}" th:alt="${partner.name}"
-                                    class="partner-avatar">
-                                <div class="card-info">
-                                    <h4 class="partner-name" th:text="${partner.name}">Partner Name</h4>
-                                    <div class="partner-meta">
-                                        <span class="partner-type" th:text="${partner.type.displayName}"
-                                            th:class="'type-' + ${partner.type.name().toLowerCase()}">Typ</span>
-                                        <span class="partner-status" th:text="${partner.status.displayName}"
-                                            th:class="'status-' + ${partner.status.name().toLowerCase()}">Status</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card-body">
-                                <div class="financial-info">
-                                    <div class="financial-item">
-                                        <span class="label">Forderungen:</span>
-                                        <span class="amount positive"
-                                            th:text="'€' + ${#numbers.formatDecimal(partner.claims, 1, 2)}">€0.00</span>
-                                    </div>
-                                    <div class="financial-item">
-                                        <span class="label">Verbindlichkeiten:</span>
-                                        <span class="amount negative"
-                                            th:text="'€' + ${#numbers.formatDecimal(partner.payable, 1, 2)}">€0.00</span>
-                                    </div>
-                                </div>
-                                <div class="card-footer">
-                                    <small class="last-modified"
-                                        th:text="'Geändert: ' + ${#temporals.format(partner.dateModified, 'dd.MM.yyyy')}">
-                                        Geändert: 01.01.2023
-                                    </small>
-                                </div>
+            <!-- Partner List -->
+            <div>
+                <div class="github-box">
+                    <div class="github-box-header">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                                <i class="fas fa-users"></i>
+                                Partner
+                                <span class="counter" th:text="${#lists.size(partners)}">0</span>
+                            </h3>
+                            <div class="flex items-center gap-2 text-small text-gray-600">
+                                <i class="fas fa-sort"></i>
+                                <span>Zuletzt geändert</span>
                             </div>
                         </div>
                     </div>
-                </section>
+                    <div id="partner-list-container">
+                        <div th:replace="~{fragments/partner-list :: partner-list}"></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Mobile Layout -->
-            <div class="mobile-layout">
-                <!-- Mobile content will be handled by CSS media queries -->
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <div id="partner-details-container">
+                    <div class="github-box">
+                        <div class="p-6 text-center">
+                            <div
+                                class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-user-plus text-2xl text-gray-400"></i>
+                            </div>
+                            <h3 class="font-semibold text-gray-900 mb-2">Partner auswählen</h3>
+                            <p class="text-small text-gray-600">
+                                Klicken Sie auf einen Partner aus der Liste, um Details anzuzeigen
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
 
-    <!-- Add Partner Modal -->
-    <div id="addPartnerModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Neuen Partner hinzufügen</h3>
-                <button class="close-modal" onclick="hideAddPartnerModal()">&times;</button>
-            </div>
-            <form id="addPartnerForm" th:action="@{partners}" method="post">
-                <div class="form-group">
-                    <label for="partnerName">Name *</label>
-                    <input type="text" id="partnerName" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="partnerType">Typ *</label>
-                    <select id="partnerType" name="partnerType" required>
-                        <option value="SUPPLIER">Lieferant</option>
-                        <option value="CUSTOMER">Kunde</option>
-                        <option value="PARTNER">Partner</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="partnerAbout">Beschreibung</label>
-                    <textarea id="partnerAbout" name="about" rows="3"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="hideAddPartnerModal()">Abbrechen</button>
-                    <button type="submit" class="btn btn-success">Partner erstellen</button>
-                </div>
-            </form>
         </div>
     </div>
 
+    <!-- Modal Container -->
+    <div id="modal-container"></div>
+
+    <!-- Financial Modal -->
+    <div id="financial-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+        style="background: rgba(0, 0, 0, 0.5); display: none;">
+        <div class="github-box w-full max-w-2xl max-h-[90vh] overflow-hidden slide-in">
+
+            <!-- Modal Header -->
+            <div class="github-box-header flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <i class="fas fa-euro-sign text-green-600"></i>
+                    <span>Finanzen verwalten</span>
+                    <span id="financial-partner-name" class="text-sm font-normal text-gray-600"></span>
+                </h2>
+                <button type="button" onclick="closeFinancialModal()" class="btn-github btn-secondary p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 120px);">
+
+                <!-- Current Balance Display -->
+                <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-4 mb-6 text-center">
+                    <div class="text-2xl font-bold mb-1" id="current-balance">€0.00</div>
+                    <div class="text-sm text-gray-600" id="balance-description">Aktueller Saldo</div>
+                </div>
+
+                <!-- Transaction Form -->
+                <form id="financial-form" class="space-y-4">
+                    <input type="hidden" id="partner-id">
+
+                    <!-- Transaction Type -->
+                    <div>
+                        <label class="label block mb-3">Transaktionsart</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="setTransactionType('claim')"
+                                class="transaction-type-btn p-4 border-2 border-green-200 rounded-lg hover:border-green-400 transition-colors"
+                                data-type="claim">
+                                <div class="text-center">
+                                    <i class="fas fa-plus-circle text-green-600 text-2xl mb-2"></i>
+                                    <div class="font-semibold text-green-800">Forderung</div>
+                                    <div class="text-xs text-gray-600">Partner schuldet uns Geld</div>
+                                </div>
+                            </button>
+                            <button type="button" onclick="setTransactionType('payable')"
+                                class="transaction-type-btn p-4 border-2 border-red-200 rounded-lg hover:border-red-400 transition-colors"
+                                data-type="payable">
+                                <div class="text-center">
+                                    <i class="fas fa-minus-circle text-red-600 text-2xl mb-2"></i>
+                                    <div class="font-semibold text-red-800">Verbindlichkeit</div>
+                                    <div class="text-xs text-gray-600">Wir schulden Partner Geld</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Amount -->
+                    <div>
+                        <label class="label block mb-2">Betrag (€) <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span
+                                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">€</span>
+                            <input type="number" step="0.01" min="0.01" required id="transaction-amount"
+                                class="form-control w-full pl-10 text-lg font-semibold" placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <!-- Purpose -->
+                    <div>
+                        <label class="label block mb-2">Verwendungszweck <span class="text-red-500">*</span></label>
+                        <input type="text" required id="transaction-purpose" class="form-control w-full"
+                            placeholder="z.B. Rechnung #2024-001, Warenlieferung, Dienstleistung..." maxlength="200">
+                        <p class="mt-1 text-small text-gray-600">Beschreibung des Grundes für diese Transaktion</p>
+                    </div>
+
+                    <!-- Reference -->
+                    <div>
+                        <label class="label block mb-2">Referenz (optional)</label>
+                        <input type="text" id="transaction-reference" class="form-control w-full"
+                            placeholder="z.B. Rechnungsnummer, Bestellnummer..." maxlength="100">
+                        <p class="mt-1 text-small text-gray-600">Interne Referenz oder Dokumentennummer</p>
+                    </div>
+
+                    <!-- Date -->
+                    <div>
+                        <label class="label block mb-2">Datum</label>
+                        <input type="date" id="transaction-date" class="form-control w-full">
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                        <button type="button" onclick="closeFinancialModal()" class="btn-github btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Abbrechen
+                        </button>
+                        <button type="submit" class="btn-github btn-success">
+                            <i class="fas fa-save"></i>
+                            Transaktion hinzufügen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Statement Modal -->
+    <div id="statement-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+        style="background: rgba(0, 0, 0, 0.5); display: none;">
+        <div class="github-box w-full max-w-4xl max-h-[90vh] overflow-hidden slide-in">
+
+            <!-- Modal Header -->
+            <div class="github-box-header flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <i class="fas fa-list-alt text-blue-600"></i>
+                    <span>Kontoauszug</span>
+                    <span id="statement-partner-name" class="text-sm font-normal text-gray-600"></span>
+                </h2>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="exportStatement()" class="btn-github btn-secondary btn-sm">
+                        <i class="fas fa-download"></i>
+                        Exportieren
+                    </button>
+                    <button type="button" onclick="closeStatementModal()" class="btn-github btn-secondary p-2">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 120px);">
+
+                <!-- Statement Header -->
+                <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        <div>
+                            <div class="text-2xl font-bold text-green-600" id="total-claims">€0.00</div>
+                            <div class="text-sm text-gray-600">Gesamt Forderungen</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-red-600" id="total-payables">€0.00</div>
+                            <div class="text-sm text-gray-600">Gesamt Verbindlichkeiten</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold" id="net-balance">€0.00</div>
+                            <div class="text-sm text-gray-600">Netto-Saldo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction History -->
+                <div class="space-y-3" id="transaction-history">
+                    <!-- Transactions will be loaded here -->
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <div>Lade Transaktionen...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ALLE JAVASCRIPT-FUNKTIONEN KORREKT DEFINIERT ===== -->
     <script>
-        // Trading Partner JavaScript Functions
+        // Global variables
+        let currentPartnerId = null;
+        let currentTransactionType = null;
+        let pendingDetailFocus = null;
+        let detailScrollPreference = null;
+        let currentStatementPartnerId = null;
 
-        function selectPartner(partnerId) {
-            // Highlight selected card
-            document.querySelectorAll('.partner-card').forEach(card => {
-                card.classList.remove('selected');
-            });
+        // ===== KORRIGIERTE UTILITY FUNKTIONEN =====
 
-            event.currentTarget.classList.add('selected');
+        function showToast(message, type = 'success', duration = 4000) {
+            console.log('[Toast]', type + ':', message);
 
-            // Load partner details
-            loadPartnerDetails(partnerId);
+            // Create toast notification
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white ${type === 'success' ? 'bg-green-600' : 'bg-red-600'} slide-in`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, duration);
         }
 
-        function loadPartnerDetails(partnerId) {
-            // This would typically make an AJAX request to get partner details
-            // For now, we'll show a placeholder
-            const detailsDiv = document.getElementById('partnerDetails');
+        // ===== FILTER FUNKTIONEN =====
 
-            detailsDiv.innerHTML = `
-        <div class="partner-detail-card">
-            <div class="detail-header">
-                <h3>Partner Details</h3>
-                <div class="detail-actions">
-                    <button class="btn btn-secondary">Bearbeiten</button>
-                </div>
-            </div>
-            <div class="detail-content">
-                <p>Details für Partner ID: ${partnerId}</p>
-                <p>Details werden hier geladen...</p>
-            </div>
-        </div>
-    `;
-        }
+        function clearAllFilters() {
+            console.log('[clearAllFilters] Called');
 
-        function showAddPartnerModal() {
-            document.getElementById('addPartnerModal').style.display = 'block';
-        }
-
-        function hideAddPartnerModal() {
-            document.getElementById('addPartnerModal').style.display = 'none';
-            document.getElementById('addPartnerForm').reset();
-        }
-
-        // Search and Filter Functions
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchInput = document.getElementById('searchInput');
-            const typeFilter = document.getElementById('typeFilter');
-            const statusFilter = document.getElementById('statusFilter');
+            const searchInput = document.getElementById('search-input');
+            const typeFilter = document.getElementById('type-filter');
+            const statusFilter = document.getElementById('status-filter');
 
             if (searchInput) {
-                searchInput.addEventListener('input', filterPartners);
+                searchInput.value = '';
+                console.log('[clearAllFilters] Search cleared');
             }
-
             if (typeFilter) {
-                typeFilter.addEventListener('change', filterPartners);
+                typeFilter.value = '';
+                console.log('[clearAllFilters] Type cleared');
             }
-
             if (statusFilter) {
-                statusFilter.addEventListener('change', filterPartners);
+                statusFilter.value = '';
+                console.log('[clearAllFilters] Status cleared');
             }
 
-            // Close modal when clicking outside
-            window.addEventListener('click', function (event) {
-                const modal = document.getElementById('addPartnerModal');
-                if (event.target === modal) {
-                    hideAddPartnerModal();
-                }
-            });
-        });
+            // Partner-Liste neu laden
+            console.log('[clearAllFilters] Reloading partner list');
+            htmx.ajax('GET', 'partners', { target: '#partner-list-container' });
+        }
 
-        function filterPartners() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const typeFilter = document.getElementById('typeFilter').value;
-            const statusFilter = document.getElementById('statusFilter').value;
+        // Legacy alias for backward compatibility
+        function clearFilters() {
+            clearAllFilters();
+        }
 
-            const cards = document.querySelectorAll('.partner-card');
+        // ===== MODAL MANAGEMENT =====
 
-            cards.forEach(card => {
-                const name = card.querySelector('.partner-name').textContent.toLowerCase();
-                const type = card.querySelector('.partner-type').classList.toString();
-                const status = card.querySelector('.partner-status').classList.toString();
+        function closeModal() {
+            console.log('[closeModal] Called');
+            const modal = document.querySelector('#modal-container .modal-backdrop');
+            if (modal) {
+                modal.remove();
+                console.log('[closeModal] Modal removed');
+            }
+            document.body.style.overflow = 'auto';
+        }
 
-                const matchesSearch = name.includes(searchTerm);
-                const matchesType = !typeFilter || type.includes(typeFilter.toLowerCase());
-                const matchesStatus = !statusFilter || status.includes(statusFilter.toLowerCase());
+        // ===== FINANCIAL MODAL FUNKTIONEN =====
 
-                if (matchesSearch && matchesType && matchesStatus) {
-                    card.style.display = 'block';
+        function openFinancialModal(partnerId, partnerName) {
+            console.log('[openFinancialModal] Called with:', partnerId, partnerName);
+
+            currentPartnerId = partnerId;
+            document.getElementById('partner-id').value = partnerId;
+            document.getElementById('financial-partner-name').textContent = '- ' + partnerName;
+            document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0];
+
+            // Load current balance via API
+            loadPartnerBalance(partnerId);
+
+            // Show modal
+            document.getElementById('financial-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            console.log('[openFinancialModal] Modal opened');
+        }
+
+        function closeFinancialModal() {
+            console.log('[closeFinancialModal] Called');
+
+            document.getElementById('financial-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+
+            // Reset form
+            document.getElementById('financial-form').reset();
+            currentTransactionType = null;
+            updateTransactionTypeButtons();
+
+            console.log('[closeFinancialModal] Modal closed and form reset');
+        }
+
+        function setTransactionType(type) {
+            console.log('[setTransactionType] Called with:', type);
+            currentTransactionType = type;
+            updateTransactionTypeButtons();
+        }
+
+        function updateTransactionTypeButtons() {
+            document.querySelectorAll('.transaction-type-btn').forEach(btn => {
+                const btnType = btn.dataset.type;
+                if (btnType === currentTransactionType) {
+                    btn.classList.add('ring-2', btnType === 'claim' ? 'ring-green-400' : 'ring-red-400');
+                    btn.classList.remove('border-2');
                 } else {
-                    card.style.display = 'none';
+                    btn.classList.remove('ring-2', 'ring-green-400', 'ring-red-400');
+                    btn.classList.add('border-2');
                 }
             });
         }
+
+        function loadPartnerBalance(partnerId) {
+            console.log('[loadPartnerBalance] Loading balance for partner:', partnerId);
+
+            fetch(`/api/partners/${partnerId}/balance`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Balance API nicht verfügbar');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('[loadPartnerBalance] Balance loaded:', data);
+                    const balance = data.claims - data.payables;
+                    const balanceEl = document.getElementById('current-balance');
+                    const descEl = document.getElementById('balance-description');
+
+                    balanceEl.textContent = '€' + Math.abs(balance).toFixed(2);
+                    balanceEl.className = balance >= 0 ? 'text-2xl font-bold mb-1 text-green-600' : 'text-2xl font-bold mb-1 text-red-600';
+                    descEl.textContent = balance >= 0 ? 'Aktuelles Guthaben' : 'Aktuelle Schulden';
+                })
+                .catch(error => {
+                    console.log('[loadPartnerBalance] Using fallback data:', error.message);
+                    document.getElementById('current-balance').textContent = '€0.00';
+                    document.getElementById('balance-description').textContent = 'Aktueller Saldo';
+                });
+        }
+
+        // ===== STATEMENT MODAL FUNKTIONEN =====
+
+        function openAccountStatement(partnerId, partnerName) {
+            console.log('[openAccountStatement] Called with:', partnerId, partnerName);
+
+            currentStatementPartnerId = partnerId;
+            currentPartnerId = Number(partnerId);
+            document.getElementById('statement-partner-name').textContent = '- ' + partnerName;
+            const modal = document.getElementById('statement-modal');
+            modal.style.display = 'flex';
+            modal.dataset.partnerId = partnerId;
+            document.body.style.overflow = 'hidden';
+
+            loadAccountStatement(partnerId);
+        }
+
+        function closeStatementModal() {
+            console.log('[closeStatementModal] Called');
+            const modal = document.getElementById('statement-modal');
+            modal.style.display = 'none';
+            delete modal.dataset.partnerId;
+            currentStatementPartnerId = null;
+            document.body.style.overflow = 'auto';
+        }
+
+        function loadAccountStatement(partnerId) {
+            console.log('[loadAccountStatement] Loading statement for partner:', partnerId);
+
+            const historyContainer = document.getElementById('transaction-history');
+            if (historyContainer) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                        <div>Lade Transaktionen...</div>
+                    </div>
+                `;
+            }
+
+            fetch(`/api/partners/${partnerId}/transactions`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Transactions API nicht verfügbar');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('[loadAccountStatement] Transactions loaded:', data);
+                    renderAccountStatement(partnerId, data);
+                })
+                .catch(error => {
+                    console.error('[loadAccountStatement] Error:', error);
+
+                    if (historyContainer) {
+                        historyContainer.innerHTML = `
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-triangle-exclamation text-3xl mb-2 text-red-500"></i>
+                                <div>Kontoauszug konnte nicht geladen werden.</div>
+                                <p class="text-xs mt-2">${escapeHtml(error.message || 'Unbekannter Fehler')}</p>
+                            </div>
+                        `;
+                    }
+
+                    document.getElementById('total-claims').textContent = formatCurrency(0);
+                    document.getElementById('total-payables').textContent = formatCurrency(0);
+                    const netBalanceEl = document.getElementById('net-balance');
+                    netBalanceEl.textContent = formatCurrency(0);
+                    netBalanceEl.className = 'text-3xl font-bold text-gray-500';
+                });
+        }
+
+        function escapeHtml(value) {
+            if (value === null || value === undefined) {
+                return '';
+            }
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatCurrency(value) {
+            const amount = Number(value || 0);
+            return new Intl.NumberFormat('de-DE', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(amount);
+        }
+
+        function formatSignedAmount(entry) {
+            const rawAmount = Number(entry.amount || 0);
+            const signed = (entry.type === 'CLAIM' ? 1 : -1) * rawAmount;
+            const formatted = formatCurrency(Math.abs(signed));
+            return `${signed >= 0 ? '+' : '-'}${formatted}`;
+        }
+
+        function renderStatementBreakdown(overview) {
+            const openClaims = overview.openClaims || 0;
+            const settledClaims = overview.settledClaims || 0;
+            const openPayables = overview.openPayables || 0;
+            const settledPayables = overview.settledPayables || 0;
+
+            return `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white border border-emerald-200 rounded-xl p-4">
+                        <div class="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Forderungen offen</div>
+                        <div class="text-2xl font-bold text-emerald-600 mt-2">${formatCurrency(openClaims)}</div>
+                        <div class="text-xs text-gray-600 mt-1">Beglichen: ${formatCurrency(settledClaims)}</div>
+                    </div>
+                    <div class="bg-white border border-red-200 rounded-xl p-4">
+                        <div class="text-xs font-semibold text-red-700 uppercase tracking-wide">Verbindlichkeiten offen</div>
+                        <div class="text-2xl font-bold text-red-600 mt-2">${formatCurrency(openPayables)}</div>
+                        <div class="text-xs text-gray-600 mt-1">Beglichen: ${formatCurrency(settledPayables)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTransactionCard(partnerId, entry, isSettled) {
+            const isClaim = entry.type === 'CLAIM';
+            const typeBadgeClass = isClaim ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700';
+            const statusBadgeClass = entry.status === 'OPEN' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-700';
+            const amountClass = isSettled ? 'text-gray-500' : (isClaim ? 'text-emerald-600' : 'text-red-600');
+            const referenceHtml = entry.reference ? `<div class="text-xs text-gray-500 mt-1">Referenz: ${escapeHtml(entry.reference)}</div>` : '';
+            const buttonLabel = isSettled ? 'Als offen markieren' : 'Als beglichen markieren';
+            const buttonIcon = isSettled ? 'fa-undo' : 'fa-check';
+            const nextStatus = isSettled ? 'OPEN' : 'SETTLED';
+            const buttonClass = isSettled ? 'btn-github btn-secondary btn-sm' : 'btn-github btn-success btn-sm';
+            const amountLabel = formatSignedAmount(entry);
+
+            return `
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${typeBadgeClass}">${escapeHtml(entry.typeLabel || (isClaim ? 'Forderung' : 'Verbindlichkeit'))}</span>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusBadgeClass}">${escapeHtml(entry.statusLabel || (isSettled ? 'Beglichen' : 'Offen'))}</span>
+                            <span class="text-xs text-gray-500">${escapeHtml(entry.dateFormatted || '')}</span>
+                        </div>
+                        <div class="font-semibold text-gray-900">${escapeHtml(entry.purpose || '—')}</div>
+                        ${referenceHtml}
+                    </div>
+                    <div class="flex flex-col items-end gap-2 text-right">
+                        <div class="text-lg font-bold ${amountClass}">${amountLabel}</div>
+                        <button type="button" class="${buttonClass}" onclick="changeTransactionStatus('${partnerId}', '${entry.id}', '${nextStatus}')">
+                            <i class="fas ${buttonIcon}"></i>
+                            <span>${buttonLabel}</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTransactionsSection(partnerId, title, items, isSettled) {
+            if (!items || items.length === 0) {
+                return `
+                    <div class="bg-white border border-dashed border-gray-200 rounded-xl p-6 text-center text-gray-500">
+                        <i class="fas ${isSettled ? 'fa-clipboard-check text-green-500' : 'fa-inbox text-gray-400'} text-2xl mb-2"></i>
+                        <div>${isSettled ? 'Keine beglichenen Posten' : 'Keine offenen Posten'}</div>
+                    </div>
+                `;
+            }
+
+            const cards = items.map(entry => renderTransactionCard(partnerId, entry, isSettled)).join('');
+            return `
+                <div class="space-y-3">
+                    <h6 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">${escapeHtml(title)}</h6>
+                    ${cards}
+                </div>
+            `;
+        }
+
+        function renderAccountStatement(partnerId, data) {
+            const overview = data.overview || {};
+            const transactions = data.transactions || [];
+
+            const totalClaims = Number(overview.totalClaims ?? (overview.openClaims || 0) + (overview.settledClaims || 0));
+            const totalPayables = Number(overview.totalPayables ?? (overview.openPayables || 0) + (overview.settledPayables || 0));
+            const netBalance = Number(overview.netBalance ?? totalClaims - totalPayables);
+
+            document.getElementById('total-claims').textContent = formatCurrency(totalClaims);
+            document.getElementById('total-payables').textContent = formatCurrency(totalPayables);
+
+            const netBalanceEl = document.getElementById('net-balance');
+            netBalanceEl.textContent = formatCurrency(netBalance);
+            netBalanceEl.className = netBalance >= 0 ? 'text-3xl font-bold text-green-600' : 'text-3xl font-bold text-red-600';
+
+            const historyContainer = document.getElementById('transaction-history');
+            if (!historyContainer) {
+                return;
+            }
+
+            const openTransactions = transactions.filter(tx => tx.status === 'OPEN');
+            const settledTransactions = transactions.filter(tx => tx.status === 'SETTLED');
+
+            historyContainer.innerHTML = `
+                ${renderStatementBreakdown(overview)}
+                <div class="space-y-6">
+                    ${renderTransactionsSection(partnerId, 'Offene Posten', openTransactions, false)}
+                    ${renderTransactionsSection(partnerId, 'Beglichene Posten', settledTransactions, true)}
+                </div>
+            `;
+        }
+
+        function changeTransactionStatus(partnerId, entryId, nextStatus) {
+            if (!partnerId || !entryId) {
+                return;
+            }
+
+            pendingDetailFocus = 'financial';
+
+            fetch(`/api/partners/${partnerId}/transactions/${entryId}/status`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: nextStatus })
+            })
+                .then(async response => {
+                    const payload = await response.json().catch(() => ({}));
+                    if (!response.ok || payload.success === false) {
+                        const message = payload.message || 'Status konnte nicht aktualisiert werden.';
+                        throw new Error(message);
+                    }
+                    return payload;
+                })
+                .then(() => {
+                    showToast('Transaktionsstatus aktualisiert', 'success');
+                    loadAccountStatement(partnerId);
+                    if (window.htmx) {
+                        htmx.ajax('GET', 'partners', { target: '#partner-list-container' });
+                    }
+                    refreshPartnerDetails(partnerId, { focusSection: 'financial' });
+                })
+                .catch(error => {
+                    console.error('[changeTransactionStatus] Error:', error);
+                    showToast(error.message || 'Status konnte nicht aktualisiert werden.', 'error');
+                });
+        }
+
+        function exportStatement() {
+            console.log('[exportStatement] Called');
+
+            const modal = document.getElementById('statement-modal');
+            const partnerId = currentStatementPartnerId || (modal ? modal.dataset.partnerId : null);
+
+            if (!partnerId) {
+                showToast('Kein Partner für den Export ausgewählt.', 'error');
+                return;
+            }
+
+            fetch(`/api/partners/${partnerId}/export-statement`)
+                .then(async response => {
+                    if (!response.ok) {
+                        const text = await response.text().catch(() => 'Export fehlgeschlagen.');
+                        throw new Error(text || 'Export fehlgeschlagen.');
+                    }
+                    const blob = await response.blob();
+                    const filename = extractFilenameFromResponse(response) || `kontoauszug-${partnerId}.csv`;
+                    downloadBlob(blob, filename);
+                    showToast('Kontoauszug exportiert', 'success');
+                })
+                .catch(error => {
+                    console.error('[exportStatement] Error:', error);
+                    showToast(error.message || 'Export fehlgeschlagen.', 'error');
+                });
+        }
+
+        function extractFilenameFromResponse(response) {
+            const disposition = response.headers ? response.headers.get('content-disposition') : null;
+            if (!disposition) {
+                return null;
+            }
+            const filenameMatch = disposition.match(/filename\*?=([^;]+)/i);
+            if (!filenameMatch || !filenameMatch[1]) {
+                return null;
+            }
+            const value = filenameMatch[1].replace(/UTF-8''/i, '').trim();
+            try {
+                return decodeURIComponent(value.replace(/"/g, ''));
+            } catch (error) {
+                return value.replace(/"/g, '');
+            }
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // ===== PARTNER DETAIL REFRESH =====
+
+        function getDetailScrollContainer() {
+            const detailRoot = document.querySelector('#partner-details-container [data-partner-id]');
+            return detailRoot ? detailRoot.querySelector('.overflow-y-auto') : null;
+        }
+
+        function scrollToDetailSection(sectionKey) {
+            const scrollEl = getDetailScrollContainer();
+            if (!scrollEl) {
+                return;
+            }
+            const section = scrollEl.querySelector(`[data-section-anchor="${sectionKey}"]`);
+            if (!section) {
+                return;
+            }
+
+            const offset = section.getBoundingClientRect().top - scrollEl.getBoundingClientRect().top + scrollEl.scrollTop;
+            scrollEl.scrollTo({ top: Math.max(offset - 24, 0), behavior: 'smooth' });
+        }
+
+        function highlightDetailSection(sectionKey) {
+            const scrollEl = getDetailScrollContainer();
+            if (!scrollEl) {
+                return;
+            }
+            const section = scrollEl.querySelector(`[data-section-anchor="${sectionKey}"]`);
+            if (!section) {
+                return;
+            }
+            section.classList.add('flash-highlight');
+            setTimeout(() => section.classList.remove('flash-highlight'), 1400);
+        }
+
+        function refreshPartnerDetails(partnerId, options = {}) {
+            if (!partnerId) {
+                return;
+            }
+
+            currentPartnerId = Number(partnerId);
+
+            if (options.focusSection) {
+                pendingDetailFocus = options.focusSection;
+                detailScrollPreference = null;
+            } else {
+                const scrollContainer = getDetailScrollContainer();
+                detailScrollPreference = scrollContainer ? scrollContainer.scrollTop : null;
+            }
+
+            const target = document.querySelector('#partner-details-container');
+            if (window.htmx && target) {
+                htmx.ajax('GET', `/partners/${partnerId}`, {
+                    target: '#partner-details-container',
+                    swap: 'innerHTML'
+                });
+            } else {
+                window.location.reload();
+            }
+        }
+
+        function applyDetailEnhancements() {
+            const detailRoot = document.querySelector('#partner-details-container [data-partner-id]');
+            if (!detailRoot) {
+                return;
+            }
+
+            const idAttr = detailRoot.getAttribute('data-partner-id');
+            if (idAttr) {
+                currentPartnerId = Number(idAttr);
+            }
+
+            const scrollContainer = getDetailScrollContainer();
+            if (pendingDetailFocus) {
+                // Scroll instantly before smooth highlight to avoid jumpiness
+                if (scrollContainer) {
+                    scrollContainer.scrollTo({ top: scrollContainer.scrollTop });
+                }
+                scrollToDetailSection(pendingDetailFocus);
+                highlightDetailSection(pendingDetailFocus);
+            } else if (scrollContainer != null && detailScrollPreference != null) {
+                scrollContainer.scrollTop = detailScrollPreference;
+            }
+
+            pendingDetailFocus = null;
+            detailScrollPreference = null;
+        }
+
+        function resetPartnerDetails() {
+            const container = document.getElementById('partner-details-container');
+            if (!container) {
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="github-box">
+                    <div class="p-6 text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user-plus text-2xl text-gray-400"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">Partner auswählen</h3>
+                        <p class="text-small text-gray-600">Klicken Sie auf einen Partner aus der Liste, um Details anzuzeigen</p>
+                    </div>
+                </div>
+            `;
+
+            pendingDetailFocus = null;
+            detailScrollPreference = null;
+        }
+
+        window.refreshPartnerDetails = refreshPartnerDetails;
+        window.resetPartnerDetails = resetPartnerDetails;
+
+        function extractPartnerIdFromPath(path) {
+            if (!path) {
+                return null;
+            }
+            const match = path.match(/\/partners\/(\d+)/);
+            return match ? Number(match[1]) : null;
+        }
+
+        function handlePartnerListRefreshed(evt) {
+            const config = evt.detail?.requestConfig || {};
+            const verb = (config.verb || '').toLowerCase();
+
+            if (verb === 'delete') {
+                const deletedId = extractPartnerIdFromPath(config.path);
+                if (deletedId != null && currentPartnerId != null && deletedId === Number(currentPartnerId)) {
+                    currentPartnerId = null;
+                    resetPartnerDetails();
+                }
+                return;
+            }
+
+            if (verb === 'post') {
+                if (currentPartnerId != null) {
+                    refreshPartnerDetails(currentPartnerId, { focusSection: pendingDetailFocus || undefined });
+                }
+                return;
+            }
+
+            if (verb === 'put') {
+                const updatedId = extractPartnerIdFromPath(config.path) || currentPartnerId;
+                if (updatedId != null) {
+                    refreshPartnerDetails(updatedId);
+                }
+                return;
+            }
+
+            if (verb === 'get') {
+                if (currentPartnerId != null) {
+                    const selector = `#partner-list-container [data-partner-id="${currentPartnerId}"]`;
+                    const exists = document.querySelector(selector);
+                    if (!exists) {
+                        currentPartnerId = null;
+                        resetPartnerDetails();
+                    }
+                }
+            }
+        }
+
+        // ===== CONTACT MANAGEMENT =====
+
+        function openContactModal(partnerId, contactIndex) {
+            const modal = document.getElementById('contact-form-modal');
+            const title = document.getElementById('contact-form-title');
+            if (!modal || !title) {
+                console.warn('[Contact] Modal not found');
+                return;
+            }
+
+            document.getElementById('contact-partner-id').value = partnerId;
+            document.getElementById('contact-index').value = contactIndex;
+
+            if (contactIndex === '-1') {
+                title.textContent = 'Kontakt hinzufügen';
+                const form = document.getElementById('contact-form');
+                if (form) {
+                    form.reset();
+                }
+            } else {
+                title.textContent = 'Kontakt bearbeiten';
+                const root = document.querySelector('#partner-details-container') || document;
+                const contactItem = root.querySelector(`.contact-item[data-index="${contactIndex}"]`);
+                if (contactItem) {
+                    document.getElementById('contact-name').value = contactItem.dataset.name || '';
+                    document.getElementById('contact-role').value = contactItem.dataset.role || '';
+                    document.getElementById('contact-email').value = contactItem.dataset.email || '';
+                    document.getElementById('contact-phone').value = contactItem.dataset.phone || '';
+                }
+            }
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function addNewContact(partnerId) {
+            openContactModal(partnerId, '-1');
+        }
+
+        function editContact(partnerId, contactIndex) {
+            openContactModal(partnerId, String(contactIndex));
+        }
+
+        function deleteContact(partnerId, contactIndex) {
+            if (!confirm('Möchten Sie diesen Kontakt wirklich löschen?')) {
+                return;
+            }
+
+            fetch(`/api/partners/${partnerId}/contacts/${contactIndex}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => { throw new Error(data.message || 'Kontakt konnte nicht gelöscht werden.'); });
+                    }
+                    return response.json().catch(() => ({}));
+                })
+                .then(() => {
+                    showToast('Kontakt erfolgreich gelöscht', 'success');
+                    refreshPartnerDetails(partnerId, { focusSection: 'contacts' });
+                })
+                .catch(error => {
+                    console.error('[Contact] Delete error:', error);
+                    showToast(error.message || 'Kontakt konnte nicht gelöscht werden.', 'error');
+                });
+        }
+
+        function closeContactForm() {
+            const modal = document.getElementById('contact-form-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleContactFormSubmit(event) {
+            event.preventDefault();
+
+            const partnerId = document.getElementById('contact-partner-id').value;
+            const contactIndex = document.getElementById('contact-index').value;
+            const isEdit = contactIndex !== '-1';
+
+            const contactData = {
+                name: document.getElementById('contact-name').value.trim(),
+                role: document.getElementById('contact-role').value.trim(),
+                email: document.getElementById('contact-email').value.trim(),
+                phone: document.getElementById('contact-phone').value.trim()
+            };
+
+            const url = isEdit
+                ? `/api/partners/${partnerId}/contacts/${contactIndex}`
+                : `/api/partners/${partnerId}/contacts`;
+
+            const method = isEdit ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(contactData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => { throw new Error(data.message || 'Kontakt konnte nicht gespeichert werden.'); });
+                    }
+                    return response.json().catch(() => ({}));
+                })
+                .then(() => {
+                    closeContactForm();
+                    showToast(isEdit ? 'Kontakt erfolgreich aktualisiert' : 'Kontakt erfolgreich hinzugefügt', 'success');
+                    refreshPartnerDetails(partnerId, { focusSection: 'contacts' });
+                })
+                .catch(error => {
+                    console.error('[Contact] Save error:', error);
+                    showToast(error.message || 'Kontakt konnte nicht gespeichert werden.', 'error');
+                });
+        }
+
+        function setupContactForm() {
+            const form = document.getElementById('contact-form');
+            if (form && !form.dataset.initialized) {
+                form.addEventListener('submit', handleContactFormSubmit);
+                form.dataset.initialized = 'true';
+            }
+        }
+
+        window.addNewContact = addNewContact;
+        window.editContact = editContact;
+        window.deleteContact = deleteContact;
+        window.closeContactForm = closeContactForm;
+
+        // ===== ADDRESS MANAGEMENT =====
+
+        function openAddressModal(partnerId, addressIndex) {
+            const modal = document.getElementById('address-form-modal');
+            const title = document.getElementById('address-form-title');
+            if (!modal || !title) {
+                console.warn('[Address] Modal not found');
+                return;
+            }
+
+            document.getElementById('address-partner-id').value = partnerId;
+            document.getElementById('address-index').value = addressIndex;
+
+            if (addressIndex === '-1') {
+                title.textContent = 'Adresse hinzufügen';
+                const form = document.getElementById('address-form');
+                if (form) {
+                    form.reset();
+                }
+                const country = document.getElementById('address-country');
+                if (country) {
+                    country.value = 'Deutschland';
+                }
+            } else {
+                title.textContent = 'Adresse bearbeiten';
+                const root = document.querySelector('#partner-details-container') || document;
+                const addressItem = root.querySelector(`.address-item[data-index="${addressIndex}"]`);
+                if (addressItem) {
+                    document.getElementById('address-type').value = addressItem.dataset.type || 'Hauptadresse';
+                    document.getElementById('address-street').value = addressItem.dataset.street || '';
+                    document.getElementById('address-zipcode').value = addressItem.dataset.zipcode || '';
+                    document.getElementById('address-city').value = addressItem.dataset.city || '';
+                    document.getElementById('address-country').value = addressItem.dataset.country || 'Deutschland';
+                }
+            }
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function addNewAddress(partnerId) {
+            openAddressModal(partnerId, '-1');
+        }
+
+        function editAddress(partnerId, addressIndex) {
+            openAddressModal(partnerId, String(addressIndex));
+        }
+
+        function deleteAddress(partnerId, addressIndex) {
+            if (!confirm('Möchten Sie diese Adresse wirklich löschen?')) {
+                return;
+            }
+
+            fetch(`/api/partners/${partnerId}/addresses/${addressIndex}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => { throw new Error(data.message || 'Adresse konnte nicht gelöscht werden.'); });
+                    }
+                    return response.json().catch(() => ({}));
+                })
+                .then(() => {
+                    showToast('Adresse erfolgreich gelöscht', 'success');
+                    refreshPartnerDetails(partnerId, { focusSection: 'addresses' });
+                })
+                .catch(error => {
+                    console.error('[Address] Delete error:', error);
+                    showToast(error.message || 'Adresse konnte nicht gelöscht werden.', 'error');
+                });
+        }
+
+        function closeAddressForm() {
+            const modal = document.getElementById('address-form-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleAddressFormSubmit(event) {
+            event.preventDefault();
+
+            const partnerId = document.getElementById('address-partner-id').value;
+            const addressIndex = document.getElementById('address-index').value;
+            const isEdit = addressIndex !== '-1';
+
+            const addressData = {
+                type: document.getElementById('address-type').value,
+                street: document.getElementById('address-street').value.trim(),
+                zipCode: document.getElementById('address-zipcode').value.trim(),
+                city: document.getElementById('address-city').value.trim(),
+                country: document.getElementById('address-country').value
+            };
+
+            const url = isEdit
+                ? `/api/partners/${partnerId}/addresses/${addressIndex}`
+                : `/api/partners/${partnerId}/addresses`;
+
+            const method = isEdit ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(addressData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => { throw new Error(data.message || 'Adresse konnte nicht gespeichert werden.'); });
+                    }
+                    return response.json().catch(() => ({}));
+                })
+                .then(() => {
+                    closeAddressForm();
+                    showToast(isEdit ? 'Adresse erfolgreich aktualisiert' : 'Adresse erfolgreich hinzugefügt', 'success');
+                    refreshPartnerDetails(partnerId, { focusSection: 'addresses' });
+                })
+                .catch(error => {
+                    console.error('[Address] Save error:', error);
+                    showToast(error.message || 'Adresse konnte nicht gespeichert werden.', 'error');
+                });
+        }
+
+        function setupAddressForm() {
+            const form = document.getElementById('address-form');
+            if (form && !form.dataset.initialized) {
+                form.addEventListener('submit', handleAddressFormSubmit);
+                form.dataset.initialized = 'true';
+            }
+        }
+
+        window.addNewAddress = addNewAddress;
+        window.editAddress = editAddress;
+        window.deleteAddress = deleteAddress;
+        window.closeAddressForm = closeAddressForm;
+
+        // ===== INITIALIZATION =====
+
+        function initializeDetailManagers() {
+            setupContactForm();
+            setupAddressForm();
+            applyDetailEnhancements();
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeDetailManagers);
+
+        if (window.htmx) {
+            htmx.onLoad(() => {
+                initializeDetailManagers();
+            });
+
+            htmx.on('htmx:afterSwap', function (evt) {
+                const target = evt.detail && evt.detail.target ? evt.detail.target : null;
+                if (target && target.id === 'partner-list-container') {
+                    handlePartnerListRefreshed(evt);
+                }
+                if (target && target.id === 'partner-details-container') {
+                    initializeDetailManagers();
+                }
+            });
+        }
+
+        // ===== EVENT LISTENERS =====
+
+        // Financial Form Submit Handler
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('[DOMContentLoaded] Initializing form handlers...');
+
+            const financialForm = document.getElementById('financial-form');
+            if (financialForm) {
+                financialForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    console.log('[financialForm] Submit called');
+
+                    if (!currentTransactionType) {
+                        alert('Bitte wählen Sie eine Transaktionsart aus.');
+                        return;
+                    }
+
+                    const formData = {
+                        partnerId: currentPartnerId,
+                        type: currentTransactionType,
+                        amount: document.getElementById('transaction-amount').value,
+                        purpose: document.getElementById('transaction-purpose').value,
+                        reference: document.getElementById('transaction-reference').value,
+                        date: document.getElementById('transaction-date').value
+                    };
+
+                    console.log('[financialForm] Transaction data:', formData);
+
+                    // Submit via API
+                    fetch('/api/partners/financial-transaction', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'HX-Request': 'true'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                        .then(async response => {
+                            const data = await response.json().catch(() => ({}));
+                            console.log('[financialForm] API response:', data);
+
+                            if (!response.ok || !data.success) {
+                                const message = data.message || 'Transaktion konnte nicht gespeichert werden.';
+                                throw new Error(message);
+                            }
+
+                            showToast('Transaktion erfolgreich hinzugefügt');
+                            closeFinancialModal();
+
+                            // Refresh partner list
+                            htmx.ajax('GET', 'partners', { target: '#partner-list-container' });
+
+                            // Refresh partner details if open
+                            if (currentPartnerId) {
+                                refreshPartnerDetails(currentPartnerId, { focusSection: 'financial' });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('[financialForm] Error:', error);
+                            showToast(error.message || 'Transaktion konnte nicht gespeichert werden.', 'error');
+                        });
+                });
+
+                console.log('[DOMContentLoaded] Financial form handler attached');
+            }
+        });
+
+        // HTMX Event Listeners
+        document.addEventListener('htmx:afterRequest', function (evt) {
+            console.log('[HTMX] afterRequest:', evt.detail.requestConfig.path, evt.detail.xhr.status);
+
+            if (evt.detail.xhr.status >= 200 && evt.detail.xhr.status < 300) {
+                if (evt.detail.requestConfig.path.includes('partners') &&
+                    evt.detail.requestConfig.verb === 'post') {
+                    showToast('Partner erfolgreich erstellt!');
+                    closeModal();
+                } else if (evt.detail.requestConfig.path.includes('partners') &&
+                    evt.detail.requestConfig.verb === 'put') {
+                    showToast('Partner erfolgreich aktualisiert!');
+                    closeModal();
+                } else if (evt.detail.requestConfig.verb === 'delete') {
+                    showToast('Partner erfolgreich gelöscht!');
+                }
+            } else if (evt.detail.xhr.status >= 400) {
+                console.error('[HTMX] Error response:', evt.detail.xhr.status);
+                showToast('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.', 'error');
+            }
+        });
+
+        document.addEventListener('htmx:responseError', function (evt) {
+            console.error('[HTMX] responseError:', evt.detail);
+            showToast('Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.', 'error');
+        });
+
+        document.addEventListener('htmx:targetError', function (evt) {
+            console.error('[HTMX] targetError:', evt.detail);
+            showToast('Element nicht gefunden: ' + evt.detail.target, 'error');
+        });
+
+        // Close modals on backdrop click
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('modal-backdrop')) {
+                if (e.target.id === 'financial-modal') {
+                    closeFinancialModal();
+                } else if (e.target.id === 'statement-modal') {
+                    closeStatementModal();
+                } else {
+                    closeModal();
+                }
+            }
+        });
+
+        // Close modals on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeFinancialModal();
+                closeStatementModal();
+            }
+        });
+
+        // Debug: Log function availability
+        console.log('[Debug] Functions loaded:', {
+            clearAllFilters: typeof clearAllFilters,
+            clearFilters: typeof clearFilters,
+            closeModal: typeof closeModal,
+            openFinancialModal: typeof openFinancialModal,
+            closeFinancialModal: typeof closeFinancialModal,
+            openAccountStatement: typeof openAccountStatement,
+            closeStatementModal: typeof closeStatementModal,
+            addNewContact: typeof addNewContact,
+            addNewAddress: typeof addNewAddress
+        });
+
+        console.log('[Init] All functions loaded successfully');
     </script>
 </body>
 

@@ -1,0 +1,22 @@
+{
+    "name": "Trading Partner Management",
+    "short_name": "TradingPartners",
+    "description": "Manage your trading partners efficiently",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f6f8fa",
+    "theme_color": "#1f883d",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

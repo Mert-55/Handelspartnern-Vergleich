@@ -39,7 +39,7 @@ public class TradingPartnerService {
         partner.setTaxId(dto.taxId().orElse("DE000000000"));
         partner.setPaymentTerms(dto.paymentTerms().orElse("Net 30"));
         partner.setCorporateImageUrl(dto.corporateImageUrl().orElse(null));
-        partner.setType(dto.partnerType());
+        partner.setType(dto.type());
         partner.setStatus(PartnerStatus.PENDING_APPROVAL);
 
         return repository.save(partner);

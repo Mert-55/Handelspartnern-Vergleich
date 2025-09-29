@@ -1,0 +1,141 @@
+<!-- Contact Manager Fragment -->
+<div th:fragment="contact-manager" class="space-y-4">
+    <div class="flex items-center justify-between">
+        <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+            <i class="fas fa-address-book text-orange-600"></i>
+            Kontaktinformationen
+        </h4>
+        <button onclick="addNewContact(this.dataset.partnerId)" th:attr="data-partner-id=${partner.id}"
+            class="btn-github btn-success btn-sm">
+            <i class="fas fa-plus"></i>
+            Kontakt hinzufügen
+        </button>
+    </div>
+
+    <!-- Contact List -->
+    <div id="contact-list" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div th:each="contact, iterStat : ${partner.contacts}"
+            class="contact-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow h-full"
+            th:attr="data-index=${iterStat.index},
+                     data-name=${contact.name == null ? '' : contact.name},
+                     data-role=${contact.role == null ? '' : contact.role},
+                     data-email=${contact.email == null ? '' : contact.email},
+                     data-phone=${contact.phone == null ? '' : contact.phone}">
+
+            <div class="flex items-start justify-between">
+                <div class="flex-1 space-y-2">
+                    <!-- Contact Header -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+                            th:text="${!#strings.isEmpty(contact.name) ? #strings.substring(contact.name, 0, 1) : 'K'}">
+                            K</div>
+                        <div>
+                            <h5 class="font-medium text-gray-900" th:text="${contact.name ?: 'Unbenannter Kontakt'}">Max
+                                Mustermann</h5>
+                            <p class="text-sm text-gray-500" th:text="${contact.role ?: 'Allgemein'}">Vertrieb</p>
+                        </div>
+                    </div>
+
+                    <!-- Contact Details -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 ml-13">
+                        <div th:if="${contact.email}" class="flex items-center gap-2">
+                            <i class="fas fa-envelope text-gray-400 w-4"></i>
+                            <a th:href="|mailto:${contact.email}|" class="text-blue-600 hover:underline text-sm"
+                                th:text="${contact.email}">email@example.com</a>
+                        </div>
+                        <div th:if="${contact.phone}" class="flex items-center gap-2">
+                            <i class="fas fa-phone text-gray-400 w-4"></i>
+                            <a th:href="|tel:${contact.phone}|" class="text-gray-700 hover:text-blue-600 text-sm"
+                                th:text="${contact.phone}">+49 123 456789</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-1 ml-4">
+                    <button onclick="editContact(this.dataset.partnerId, this.dataset.contactIndex)"
+                        th:attr="data-partner-id=${partner.id},data-contact-index=${iterStat.index}"
+                        class="btn-ghost p-2 text-gray-500 hover:text-blue-600" title="Bearbeiten">
+                        <i class="fas fa-edit text-sm"></i>
+                    </button>
+                    <button onclick="deleteContact(this.dataset.partnerId, this.dataset.contactIndex)"
+                        th:attr="data-partner-id=${partner.id},data-contact-index=${iterStat.index}"
+                        class="btn-ghost p-2 text-gray-500 hover:text-red-600" title="Löschen">
+                        <i class="fas fa-trash text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(partner.contacts)}" class="col-span-full text-center py-8 text-gray-500">
+            <i class="fas fa-address-book text-3xl mb-3 text-gray-300"></i>
+            <p class="text-sm">Noch keine Kontakte hinzugefügt</p>
+            <button onclick="addNewContact(this.dataset.partnerId)" th:attr="data-partner-id=${partner.id}"
+                class="btn-github btn-primary btn-sm mt-3">
+                <i class="fas fa-plus"></i>
+                Ersten Kontakt hinzufügen
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Form Modal -->
+<div th:fragment="contact-form" id="contact-form-modal"
+    class="modal-backdrop fixed inset-0 z-50 hidden flex items-center justify-center p-4"
+    style="background: rgba(0, 0, 0, 0.5);">
+    <div class="github-box w-full max-w-md">
+        <div class="github-box-header flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-user-plus text-orange-600"></i>
+                <span id="contact-form-title">Kontakt hinzufügen</span>
+            </h3>
+            <button type="button" onclick="closeContactForm()" class="btn-github btn-secondary p-2">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <form id="contact-form" class="space-y-4">
+                <input type="hidden" id="contact-partner-id">
+                <input type="hidden" id="contact-index" value="-1">
+
+                <div>
+                    <label class="label block mb-2">Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="contact-name" required class="form-control w-full"
+                        placeholder="Max Mustermann">
+                </div>
+
+                <div>
+                    <label class="label block mb-2">Rolle/Abteilung</label>
+                    <input type="text" id="contact-role" class="form-control w-full"
+                        placeholder="Vertrieb, Einkauf, Geschäftsführung...">
+                </div>
+
+                <div>
+                    <label class="label block mb-2">E-Mail</label>
+                    <input type="email" id="contact-email" class="form-control w-full"
+                        placeholder="contact@example.com">
+                </div>
+
+                <div>
+                    <label class="label block mb-2">Telefon</label>
+                    <input type="tel" id="contact-phone" class="form-control w-full" placeholder="+49 123 456789">
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="closeContactForm()" class="btn-github btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Abbrechen
+                    </button>
+                    <button type="submit" class="btn-github btn-success">
+                        <i class="fas fa-save"></i>
+                        Speichern
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript wird global in index.html geladen -->
