@@ -1,0 +1,325 @@
+name: 🔬 Empirical Research Metrics Collection
+
+on:
+  push:
+    branches: [ main, develop, 'mc/research-infra/**' ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run daily at 02:00 UTC for continuous baseline data collection
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual runs
+
+jobs:
+  framework-comparison-metrics:
+    name: 📊 Framework Comparison Analysis
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        module: ['spring-web', 'spark-web']
+        include:
+          - module: spring-web
+            framework: 'Spring Boot'
+            port: 8080
+            build_target: 'spring-boot:run'
+          - module: spark-web
+            framework: 'Spark Java'
+            port: 4567
+            build_target: 'exec:java'
+    
+    steps:
+    - name: 🔍 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: ☕ Setup Java 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven'
+        
+    - name: 📊 Create Metrics Directory
+      run: |
+        mkdir -p metrics/${{ matrix.module }}
+        mkdir -p research-data/$(date +%Y-%m-%d)
+        
+    - name: 🔧 Build Performance Tracking - ${{ matrix.framework }}
+      run: |
+        cd handelspartnern
+        
+        # Record build start time and memory
+        BUILD_START=$(date +%s.%N)
+        MEMORY_BEFORE=$(free -m | awk 'NR==2{printf "%.1f", $3}')
+        
+        # Clean build with detailed timing
+        /usr/bin/time -v mvn clean compile -pl ${{ matrix.module }} -am -q 2> build-time.log
+        
+        # Record build end time and memory
+        BUILD_END=$(date +%s.%N)
+        MEMORY_AFTER=$(free -m | awk 'NR==2{printf "%.1f", $3}')
+        
+        # Calculate metrics
+        BUILD_TIME=$(echo "$BUILD_END - $BUILD_START" | bc)
+        MEMORY_USED=$(echo "$MEMORY_AFTER - $MEMORY_BEFORE" | bc)
+        
+        # Extract additional metrics from time command
+        MAX_MEMORY=$(grep "Maximum resident set size" build-time.log | awk '{print $6}')
+        CPU_TIME=$(grep "User time" build-time.log | awk '{print $4}')
+        WALL_TIME=$(grep "Elapsed.*wall clock" build-time.log | awk '{print $8}')
+        
+        # Store metrics
+        echo "timestamp,framework,build_time_sec,memory_used_mb,max_memory_kb,cpu_time_sec,wall_time" > ../metrics/${{ matrix.module }}/build-metrics.csv
+        echo "$(date -Iseconds),${{ matrix.framework }},$BUILD_TIME,$MEMORY_USED,$MAX_MEMORY,$CPU_TIME,$WALL_TIME" >> ../metrics/${{ matrix.module }}/build-metrics.csv
+        
+    - name: 📏 Source Lines of Code Analysis - ${{ matrix.framework }}
+      run: |
+        cd handelspartnern/${{ matrix.module }}
+        
+        # Count different types of lines
+        JAVA_LINES=$(find src -name "*.java" -exec wc -l {} + | tail -1 | awk '{print $1}')
+        JAVA_FILES=$(find src -name "*.java" | wc -l)
+        
+        # Count configuration lines
+        CONFIG_LINES=0
+        if [ -f "src/main/resources/application.yml" ]; then
+          CONFIG_LINES=$(wc -l < src/main/resources/application.yml)
+        fi
+        
+        # Calculate effective lines (excluding comments and blanks)
+        EFFECTIVE_LINES=$(find src -name "*.java" -exec grep -v -E '^\s*$|^\s*//' {} \; | wc -l)
+        
+        # Store SLOC metrics
+        echo "timestamp,framework,total_java_lines,java_files,config_lines,effective_lines,avg_lines_per_file" > ../../metrics/${{ matrix.module }}/sloc-metrics.csv
+        AVG_LINES=$(echo "scale=2; $JAVA_LINES / $JAVA_FILES" | bc)
+        echo "$(date -Iseconds),${{ matrix.framework }},$JAVA_LINES,$JAVA_FILES,$CONFIG_LINES,$EFFECTIVE_LINES,$AVG_LINES" >> ../../metrics/${{ matrix.module }}/sloc-metrics.csv
+        
+    - name: 🎯 Code Complexity Analysis - ${{ matrix.framework }}
+      run: |
+        cd handelspartnern
+        
+        # Run Checkstyle analysis
+        mvn checkstyle:checkstyle -pl ${{ matrix.module }} -q || true
+        
+        # Count complexity indicators
+        cd ${{ matrix.module }}
+        CLASSES=$(find src -name "*.java" -exec grep -l "^public class\|^class" {} \; | wc -l)
+        METHODS=$(find src -name "*.java" -exec grep -E "public|private|protected.*\(" {} \; | wc -l)
+        ANNOTATIONS=$(find src -name "*.java" -exec grep -E "@[A-Z]" {} \; | wc -l)
+        IMPORTS=$(find src -name "*.java" -exec grep "^import" {} \; | wc -l)
+        
+        # Framework-specific complexity
+        if [ "${{ matrix.module }}" = "spring-web" ]; then
+          SPRING_ANNOTATIONS=$(find src -name "*.java" -exec grep -E "@(Controller|Service|Repository|Component|Autowired|SpringBootApplication)" {} \; | wc -l)
+          echo "timestamp,framework,classes,methods,annotations,imports,spring_annotations" > ../../metrics/${{ matrix.module }}/complexity-metrics.csv
+          echo "$(date -Iseconds),${{ matrix.framework }},$CLASSES,$METHODS,$ANNOTATIONS,$IMPORTS,$SPRING_ANNOTATIONS" >> ../../metrics/${{ matrix.module }}/complexity-metrics.csv
+        else
+          MANUAL_CONFIG=$(find src -name "*.java" -exec grep -E "(new|initialize|configure)" {} \; | wc -l)
+          echo "timestamp,framework,classes,methods,annotations,imports,manual_config_calls" > ../../metrics/${{ matrix.module }}/complexity-metrics.csv
+          echo "$(date -Iseconds),${{ matrix.framework }},$CLASSES,$METHODS,$ANNOTATIONS,$IMPORTS,$MANUAL_CONFIG" >> ../../metrics/${{ matrix.module }}/complexity-metrics.csv
+        fi
+        
+    - name: 📦 JAR Size Analysis - ${{ matrix.framework }}
+      run: |
+        cd handelspartnern
+        
+        # Build JAR
+        mvn package -pl ${{ matrix.module }} -am -q
+        
+        # Measure JAR size
+        JAR_SIZE=0
+        if [ -f "${{ matrix.module }}/target/${{ matrix.module }}-1.0-SNAPSHOT.jar" ]; then
+          JAR_SIZE=$(stat -c%s "${{ matrix.module }}/target/${{ matrix.module }}-1.0-SNAPSHOT.jar")
+        fi
+        
+        # Count dependencies
+        DEPENDENCIES=$(mvn dependency:list -pl ${{ matrix.module }} -q | grep -E "^\[INFO\].*:.*:.*:.*:.*" | wc -l)
+        
+        # Store JAR metrics
+        echo "timestamp,framework,jar_size_bytes,dependencies" > ../metrics/${{ matrix.module }}/jar-metrics.csv
+        echo "$(date -Iseconds),${{ matrix.framework }},$JAR_SIZE,$DEPENDENCIES" >> ../metrics/${{ matrix.module }}/jar-metrics.csv
+        
+    - name: ⚡ Test Execution Performance - ${{ matrix.framework }}
+      run: |
+        cd handelspartnern
+        
+        # Run tests with timing
+        TEST_START=$(date +%s.%N)
+        mvn test -pl ${{ matrix.module }} -q || true
+        TEST_END=$(date +%s.%N)
+        
+        TEST_TIME=$(echo "$TEST_END - $TEST_START" | bc)
+        
+        # Count test methods and classes
+        TEST_CLASSES=$(find ${{ matrix.module }}/src/test -name "*Test*.java" 2>/dev/null | wc -l)
+        TEST_METHODS=$(find ${{ matrix.module }}/src/test -name "*.java" -exec grep -E "@Test" {} \; 2>/dev/null | wc -l)
+        
+        # Store test metrics
+        echo "timestamp,framework,test_execution_time_sec,test_classes,test_methods" > ../metrics/${{ matrix.module }}/test-metrics.csv
+        echo "$(date -Iseconds),${{ matrix.framework }},$TEST_TIME,$TEST_CLASSES,$TEST_METHODS" >> ../metrics/${{ matrix.module }}/test-metrics.csv
+        
+    - name: 📊 Dependency Analysis - ${{ matrix.framework }}
+      run: |
+        cd handelspartnern
+        
+        # Generate dependency tree
+        mvn dependency:tree -pl ${{ matrix.module }} -DoutputFile=../metrics/${{ matrix.module }}/dependency-tree.txt -q
+        
+        # Analyze dependency metrics
+        DIRECT_DEPS=$(mvn dependency:list -pl ${{ matrix.module }} -q | grep -E "^\[INFO\].*:.*:.*:.*:compile" | wc -l)
+        TRANSITIVE_DEPS=$(mvn dependency:tree -pl ${{ matrix.module }} -q | grep -E "^\[INFO\].*\+\-\|^\[INFO\].*\\\-" | wc -l)
+        TOTAL_DEPS=$(($DIRECT_DEPS + $TRANSITIVE_DEPS))
+        
+        # Framework-specific dependency analysis
+        if [ "${{ matrix.module }}" = "spring-web" ]; then
+          SPRING_DEPS=$(mvn dependency:list -pl ${{ matrix.module }} -q | grep -c "org.springframework" || echo "0")
+          echo "timestamp,framework,direct_deps,transitive_deps,total_deps,spring_deps" > ../metrics/${{ matrix.module }}/dependency-metrics.csv
+          echo "$(date -Iseconds),${{ matrix.framework }},$DIRECT_DEPS,$TRANSITIVE_DEPS,$TOTAL_DEPS,$SPRING_DEPS" >> ../metrics/${{ matrix.module }}/dependency-metrics.csv
+        else
+          SPARK_DEPS=$(mvn dependency:list -pl ${{ matrix.module }} -q | grep -c "com.sparkjava" || echo "0")
+          echo "timestamp,framework,direct_deps,transitive_deps,total_deps,spark_deps" > ../metrics/${{ matrix.module }}/dependency-metrics.csv
+          echo "$(date -Iseconds),${{ matrix.framework }},$DIRECT_DEPS,$TRANSITIVE_DEPS,$TOTAL_DEPS,$SPARK_DEPS" >> ../metrics/${{ matrix.module }}/dependency-metrics.csv
+        fi
+        
+    - name: 💾 Archive Metrics
+      uses: actions/upload-artifact@v4
+      with:
+        name: research-metrics-${{ matrix.module }}-${{ github.run_number }}
+        path: |
+          metrics/${{ matrix.module }}/
+          handelspartnern/${{ matrix.module }}/target/site/checkstyle.html
+        retention-days: 90
+        
+    - name: 📈 Aggregate Research Data
+      run: |
+        # Create daily aggregate file
+        DATE=$(date +%Y-%m-%d)
+        cat metrics/${{ matrix.module }}/*.csv > research-data/$DATE/${{ matrix.module }}-all-metrics.csv
+        
+        # Create summary for research report
+        echo "## ${{ matrix.framework }} Metrics Summary - $(date)" > research-data/$DATE/${{ matrix.module }}-summary.md
+        echo "Generated by GitHub Actions - Run #${{ github.run_number }}" >> research-data/$DATE/${{ matrix.module }}-summary.md
+        echo "" >> research-data/$DATE/${{ matrix.module }}-summary.md
+        
+        # Add key metrics to summary
+        if [ -f "metrics/${{ matrix.module }}/build-metrics.csv" ]; then
+          echo "### Build Performance" >> research-data/$DATE/${{ matrix.module }}-summary.md
+          tail -1 metrics/${{ matrix.module }}/build-metrics.csv >> research-data/$DATE/${{ matrix.module }}-summary.md
+          echo "" >> research-data/$DATE/${{ matrix.module }}-summary.md
+        fi
+        
+        if [ -f "metrics/${{ matrix.module }}/sloc-metrics.csv" ]; then
+          echo "### Source Lines of Code" >> research-data/$DATE/${{ matrix.module }}-summary.md
+          tail -1 metrics/${{ matrix.module }}/sloc-metrics.csv >> research-data/$DATE/${{ matrix.module }}-summary.md
+          echo "" >> research-data/$DATE/${{ matrix.module }}-summary.md
+        fi
+
+  comparative-analysis:
+    name: 🔬 Comparative Framework Analysis
+    needs: framework-comparison-metrics
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🔍 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 📊 Download All Metrics
+      uses: actions/download-artifact@v4
+      with:
+        pattern: research-metrics-*-${{ github.run_number }}
+        path: collected-metrics/
+        
+    - name: 🧮 Generate Comparison Report
+      run: |
+        mkdir -p reports
+        
+        # Create comprehensive comparison report
+        cat > reports/framework-comparison-$(date +%Y-%m-%d).md << 'EOF'
+        # 🔬 Framework Comparison Report
+        
+        **Generated:** $(date -Iseconds)
+        **Run:** #${{ github.run_number }}
+        **Commit:** ${{ github.sha }}
+        
+        ## 📊 Executive Summary
+        
+        This automated report compares Spring Boot vs Spark Java frameworks across multiple empirical metrics.
+        
+        ## 🏗️ Build Performance Comparison
+        
+        ### Spring Boot Build Metrics
+        ```csv
+        EOF
+        
+        # Add Spring Boot metrics if available
+        if [ -f "collected-metrics/research-metrics-spring-web-${{ github.run_number }}/build-metrics.csv" ]; then
+          cat collected-metrics/research-metrics-spring-web-${{ github.run_number }}/build-metrics.csv >> reports/framework-comparison-$(date +%Y-%m-%d).md
+        fi
+        
+        echo '```' >> reports/framework-comparison-$(date +%Y-%m-%d).md
+        echo '' >> reports/framework-comparison-$(date +%Y-%m-%d).md
+        echo '### Spark Java Build Metrics' >> reports/framework-comparison-$(date +%Y-%m-%d).md
+        echo '```csv' >> reports/framework-comparison-$(date +%Y-%m-%d).md
+        
+        # Add Spark Java metrics if available
+        if [ -f "collected-metrics/research-metrics-spark-web-${{ github.run_number }}/build-metrics.csv" ]; then
+          cat collected-metrics/research-metrics-spark-web-${{ github.run_number }}/build-metrics.csv >> reports/framework-comparison-$(date +%Y-%m-%d).md
+        fi
+        
+        echo '```' >> reports/framework-comparison-$(date +%Y-%m-%d).md
+        
+        # Add analysis sections
+        cat >> reports/framework-comparison-$(date +%Y-%m-%d).md << 'EOF'
+        
+        ## 📏 Code Complexity Analysis
+        
+        ### Key Findings
+        - **Automation Level:** Spring Boot vs Manual Configuration
+        - **Dependency Management:** Auto vs Explicit
+        - **Configuration Overhead:** Convention vs Code
+        
+        ## 📦 JAR Size & Dependencies
+        
+        Comparative analysis of deployment artifacts and dependency trees.
+        
+        ## ⚡ Performance Characteristics
+        
+        Build time, memory usage, and test execution performance comparison.
+        
+        ---
+        *This report is automatically generated for empirical research purposes.*
+        EOF
+        
+    - name: 💾 Archive Comparison Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: framework-comparison-report-${{ github.run_number }}
+        path: reports/
+        retention-days: 365
+        
+    - name: 📊 Export Research Data
+      run: |
+        # Create research data export for external analysis
+        mkdir -p exports
+        
+        # Combine all metrics into research-ready format
+        echo "timestamp,framework,metric_type,value,unit,context" > exports/research-data-${{ github.run_number }}.csv
+        
+        # Process all metric files
+        for metrics_dir in collected-metrics/*/; do
+          for csv_file in "$metrics_dir"*.csv; do
+            if [ -f "$csv_file" ]; then
+              metric_type=$(basename "$csv_file" .csv | sed 's/-metrics//')
+              tail -n +2 "$csv_file" | while IFS=, read -r timestamp framework values; do
+                echo "$timestamp,$framework,$metric_type,$values" >> exports/research-data-${{ github.run_number }}.csv
+              done
+            fi
+          done
+        done
+        
+    - name: 📤 Export for External Analysis
+      uses: actions/upload-artifact@v4
+      with:
+        name: research-data-export-${{ github.run_number }}
+        path: exports/
+        retention-days: 365
