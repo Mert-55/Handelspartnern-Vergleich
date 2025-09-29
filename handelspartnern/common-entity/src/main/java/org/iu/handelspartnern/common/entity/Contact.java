@@ -17,6 +17,12 @@ public class Contact {
         this.role = role;
     }
 
+    @Override
+    public String toString() {
+        return "Contact{" + "name='" + name + '\'' + ", email='" + email + '\'' + ", phone='" + phone + '\''
+                + ", role='" + role + '\'' + '}';
+    }
+
     // Getters and Setters
     public String getName() {
         return name;

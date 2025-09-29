@@ -1,0 +1,144 @@
+<div th:fragment="partner-list" class="divide-y divide-gray-200">
+    <!-- Partners -->
+    <div th:each="partner : ${partners}" class="group hover:bg-gray-50 transition-colors cursor-pointer"
+        th:attr="data-partner-id=${partner.id}">
+
+        <div class="px-4 py-4 sm:px-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center min-w-0 flex-1">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
+                        <div th:if="${partner.corporateImageUrl != null and !partner.corporateImageUrl.isEmpty()}"
+                            class="w-12 h-12 rounded-lg overflow-hidden">
+                            <img th:src="${partner.corporateImageUrl}" th:alt="${partner.name}"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div th:unless="${partner.corporateImageUrl != null and !partner.corporateImageUrl.isEmpty()}"
+                            class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg"
+                            th:text="${#strings.substring(partner.name, 0, 1)}">
+                            A
+                        </div>
+                    </div>
+
+                    <!-- Partner Info -->
+                    <div class="ml-4 min-w-0 flex-1">
+                        <div class="flex items-center gap-3">
+                            <h3 class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600"
+                                th:text="${partner.name}">Partner Name</h3>
+
+                            <!-- Status Labels -->
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <!-- TYPE LABEL -->
+                                <span th:if="${partner.type?.name() == 'SUPPLIER'}"
+                                    class="state-label state-pending">Lieferant</span>
+                                <span th:if="${partner.type?.name() == 'CUSTOMER'}"
+                                    class="state-label state-open">Kunde</span>
+                                <span th:if="${partner.type?.name() == 'PARTNER'}"
+                                    class="state-label state-merged">Partner</span>
+                                <span th:if="${partner.type == null}" class="state-label state-closed">Unbekannt</span>
+
+                                <!-- STATUS LABEL -->
+                                <span th:if="${partner.status?.name() == 'ACTIVE'}"
+                                    class="state-label state-open">Aktiv</span>
+                                <span th:if="${partner.status?.name() == 'PENDING_APPROVAL'}"
+                                    class="state-label state-pending">Wartend</span>
+                                <span th:if="${partner.status?.name() == 'INACTIVE'}"
+                                    class="state-label state-closed">Inaktiv</span>
+                                <span th:if="${partner.status == null}"
+                                    class="state-label state-closed">Unbekannt</span>
+                            </div>
+                        </div>
+
+                        <!-- Financial Info - NULL-SAFE -->
+                        <div class="mt-2 flex items-center gap-6 text-sm text-gray-600">
+                            <!-- Saldo-Anzeige -->
+                            <div class="flex items-center gap-1">
+                                <div th:with="claimsValue=${partner.claims != null ? partner.claims : 0},
+                                             payableValue=${partner.payable != null ? partner.payable : 0},
+                                             balanceValue=${claimsValue - payableValue}">
+
+                                    <i
+                                        th:class="${balanceValue >= 0 ? 'fas fa-arrow-up text-green-600' : 'fas fa-arrow-down text-red-600'}"></i>
+
+                                    <span class="font-bold text-lg"
+                                        th:class="${balanceValue >= 0 ? 'text-green-700' : 'text-red-700'}"
+                                        th:text="|€${#numbers.formatDecimal(balanceValue < 0 ? -balanceValue : balanceValue, 1, 2)}|">€0.00</span>
+
+                                    <span class="text-xs text-gray-500"
+                                        th:text="${balanceValue >= 0 ? 'Guthaben' : 'Schulden'}">Saldo</span>
+                                </div>
+                            </div>
+
+                            <!-- Details -->
+                            <div class="hidden sm:flex items-center gap-4 text-xs text-gray-500">
+                                <span
+                                    th:text="|Forderungen: €${#numbers.formatDecimal(partner.claims != null ? partner.claims : 0, 1, 2)}|">Forderungen</span>
+                                <span
+                                    th:text="|Verbindlichkeiten: €${#numbers.formatDecimal(partner.payable != null ? partner.payable : 0, 1, 2)}|">Verbindlichkeiten</span>
+                            </div>
+
+                            <div class="hidden sm:flex items-center gap-1 text-xs">
+                                <i class="fas fa-clock"></i>
+                                <span
+                                    th:text="${partner.dateModified != null ? #temporals.format(partner.dateModified, 'dd.MM.yyyy') : 'Unbekannt'}">01.01.2023</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-2 ml-4">
+                    <!-- View Details Button -->
+                    <button th:attr="hx-get=@{|/partners/${partner.id}|},data-partner-id=${partner.id}"
+                        hx-target="#partner-details-container" hx-swap="innerHTML"
+                        class="btn-github btn-secondary opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Details anzeigen">
+                        <i class="fas fa-eye"></i>
+                        <span class="hidden lg:inline">Details</span>
+                    </button>
+
+                    <!-- Financial Quick Action -->
+                    <button
+                        th:attr="onclick=|openFinancialModal(${partner.id}, '${#strings.escapeJavaScript(partner.name)}')|"
+                        class="btn-github btn-primary opacity-0 group-hover:opacity-100 transition-opacity bg-green-600 border-green-600 hover:bg-green-700"
+                        title="Finanzen verwalten">
+                        <i class="fas fa-euro-sign"></i>
+                        <span class="hidden lg:inline">Finanzen</span>
+                    </button>
+
+                    <!-- Edit Button -->
+                    <button th:attr="hx-get=@{|/partners/${partner.id}/edit|}" hx-target="#modal-container"
+                        hx-swap="innerHTML"
+                        class="btn-github btn-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Bearbeiten">
+                        <i class="fas fa-edit"></i>
+                    </button>
+
+                    <!-- Delete Button -->
+                    <button
+                        th:attr="hx-delete=@{|/partners/${partner.id}|},hx-confirm=|Sind Sie sicher, dass Sie ${partner.name} löschen möchten?|"
+                        hx-target="#partner-list-container" hx-swap="innerHTML"
+                        class="btn-github btn-danger opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Löschen">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${#lists.isEmpty(partners)}" class="text-center py-12">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-users text-3xl text-gray-400"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Keine Partner gefunden</h3>
+        <p class="text-gray-600 mb-6">
+            Beginnen Sie mit dem Hinzufügen Ihres ersten Geschäftspartners.
+        </p>
+        <button hx-get="partners/new" hx-target="#modal-container" hx-swap="innerHTML" class="btn-github btn-success">
+            <i class="fas fa-plus"></i>
+            Ersten Partner hinzufügen
+        </button>
+    </div>
+</div>

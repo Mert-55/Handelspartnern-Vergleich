@@ -1,0 +1,268 @@
+<!-- Partner Form Fragment (fragments/partner-form.html) -->
+<div th:fragment="partner-form" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+    style="background: rgba(0, 0, 0, 0.5);">
+    <div class="github-box w-full max-w-3xl max-h-[90vh] overflow-hidden slide-in">
+
+        <!-- Modal Header -->
+        <div class="github-box-header flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <i
+                    th:class="${isNewPartner != null && isNewPartner} ? 'fas fa-plus-circle text-green-600' : 'fas fa-edit text-blue-600'"></i>
+                <span th:text="${isNewPartner != null && isNewPartner} ? 'Neuer Partner' : 'Partner bearbeiten'">Partner
+                    Form</span>
+            </h2>
+            <button type="button" onclick="closeModal()" class="btn-github btn-secondary p-2">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 120px);">
+
+            <!-- Error Messages -->
+            <div th:if="${error}" class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle text-red-600"></i>
+                    <span class="text-sm font-medium text-red-800" th:text="${error}">Fehlermeldung</span>
+                </div>
+            </div>
+
+            <!-- Form für NEW Partner -->
+            <form th:if="${isNewPartner != null && isNewPartner}" action="partners" method="post" hx-post="partners"
+                hx-target="#partner-list-container" hx-swap="innerHTML" hx-indicator="#form-loading" class="space-y-6">
+
+                <!-- Grundinformationen -->
+                <div class="space-y-4">
+                    <div class="border-b border-gray-200 pb-4">
+                        <h3 class="text-base font-semibold text-gray-900 flex items-center gap-2">
+                            <i class="fas fa-info-circle text-blue-600"></i>
+                            Grundinformationen
+                        </h3>
+                    </div>
+
+                    <!-- Partner Name -->
+                    <div>
+                        <label class="label block mb-2">
+                            Partner Name <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="name" th:value="${partner?.name}" required maxlength="100"
+                            class="form-control w-full" placeholder="z.B. Mustermann GmbH" autocomplete="organization">
+                    </div>
+
+                    <!-- Type und Status -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div>
+                            <label class="label block mb-2">
+                                Partner-Typ <span class="text-red-500">*</span>
+                            </label>
+                            <select name="type" required class="form-control w-full">
+                                <option value="">Typ auswählen...</option>
+                                <option value="SUPPLIER" th:selected="${partner?.type?.name() == 'SUPPLIER'}">Lieferant
+                                </option>
+                                <option value="CUSTOMER" th:selected="${partner?.type?.name() == 'CUSTOMER'}">Kunde
+                                </option>
+                                <option value="PARTNER" th:selected="${partner?.type?.name() == 'PARTNER'}">Partner
+                                </option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="label block mb-2">
+                                Status <span class="text-red-500">*</span>
+                            </label>
+                            <select name="status" required class="form-control w-full">
+                                <option value="">Status auswählen...</option>
+                                <option value="ACTIVE" th:selected="${partner?.status?.name() == 'ACTIVE'}">Aktiv
+                                </option>
+                                <option value="PENDING_APPROVAL"
+                                    th:selected="${partner?.status?.name() == 'PENDING_APPROVAL'}">Wartend</option>
+                                <option value="INACTIVE" th:selected="${partner?.status?.name() == 'INACTIVE'}">Inaktiv
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Steuer- & Rechtsinformationen -->
+                <div class="space-y-4">
+                    <div class="border-b border-gray-200 pb-4">
+                        <h3 class="text-base font-semibold text-gray-900 flex items-center gap-2">
+                            <i class="fas fa-file-contract text-purple-600"></i>
+                            Rechtsinformationen
+                        </h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div>
+                            <label class="label block mb-2">
+                                Steuernummer <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="taxId" th:value="${partner?.taxId}" required maxlength="50"
+                                class="form-control w-full" placeholder="z.B. DE123456789">
+                        </div>
+
+                        <div>
+                            <label class="label block mb-2">
+                                Zahlungsbedingungen <span class="text-red-500">*</span>
+                            </label>
+                            <select name="paymentTerms" required class="form-control w-full">
+                                <option value="">Auswählen...</option>
+                                <option value="7 Tage" th:selected="${partner?.paymentTerms == '7 Tage'}">7 Tage
+                                </option>
+                                <option value="14 Tage" th:selected="${partner?.paymentTerms == '14 Tage'}">14 Tage
+                                </option>
+                                <option value="30 Tage" th:selected="${partner?.paymentTerms == '30 Tage'}">30 Tage
+                                </option>
+                                <option value="60 Tage" th:selected="${partner?.paymentTerms == '60 Tage'}">60 Tage
+                                </option>
+                                <option value="90 Tage" th:selected="${partner?.paymentTerms == '90 Tage'}">90 Tage
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zusätzliche Informationen -->
+                <div class="space-y-4">
+                    <div class="border-b border-gray-200 pb-4">
+                        <h3 class="text-base font-semibold text-gray-900 flex items-center gap-2">
+                            <i class="fas fa-clipboard text-indigo-600"></i>
+                            Zusatzinformationen
+                        </h3>
+                    </div>
+
+                    <div>
+                        <label class="label block mb-2">Beschreibung</label>
+                        <textarea name="about" rows="2" class="form-control w-full resize-none"
+                            placeholder="Kurze Beschreibung..." th:text="${partner?.about}"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="label block mb-2">Logo URL</label>
+                        <input type="url" name="corporateImageUrl" th:value="${partner?.corporateImageUrl}"
+                            class="form-control w-full" placeholder="https://example.com/logo.png">
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                    <button type="button" onclick="closeModal()" class="btn-github btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Abbrechen
+                    </button>
+
+                    <button type="submit" class="btn-github btn-success">
+                        <span id="form-loading" class="htmx-indicator">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                        <span>
+                            <i class="fas fa-plus"></i>
+                            Partner erstellen
+                        </span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Form für EDIT Partner -->
+            <form th:unless="${isNewPartner != null && isNewPartner}" th:action="'partners/' + ${partner.id}"
+                method="post" th:hx-put="'partners/' + ${partner.id}" hx-target="#partner-list-container"
+                hx-swap="innerHTML" hx-indicator="#form-loading-edit" class="space-y-6">
+
+                <input type="hidden" name="_method" value="PUT">
+
+                <!-- Gleiche Felder wie NEW form aber mit anderen Werten -->
+                <!-- Partner Name -->
+                <div>
+                    <label class="label block mb-2">
+                        Partner Name <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="name" th:value="${partner?.name}" required maxlength="100"
+                        class="form-control w-full" placeholder="z.B. Mustermann GmbH">
+                </div>
+
+                <!-- Type und Status -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                        <label class="label block mb-2">Partner-Typ <span class="text-red-500">*</span></label>
+                        <select name="type" required class="form-control w-full">
+                            <option value="">Typ auswählen...</option>
+                            <option value="SUPPLIER" th:selected="${partner?.type?.name() == 'SUPPLIER'}">Lieferant
+                            </option>
+                            <option value="CUSTOMER" th:selected="${partner?.type?.name() == 'CUSTOMER'}">Kunde</option>
+                            <option value="PARTNER" th:selected="${partner?.type?.name() == 'PARTNER'}">Partner</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="label block mb-2">Status <span class="text-red-500">*</span></label>
+                        <select name="status" required class="form-control w-full">
+                            <option value="">Status auswählen...</option>
+                            <option value="ACTIVE" th:selected="${partner?.status?.name() == 'ACTIVE'}">Aktiv</option>
+                            <option value="PENDING_APPROVAL"
+                                th:selected="${partner?.status?.name() == 'PENDING_APPROVAL'}">Wartend</option>
+                            <option value="INACTIVE" th:selected="${partner?.status?.name() == 'INACTIVE'}">Inaktiv
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Steuer- & Rechtsinformationen -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                        <label class="label block mb-2">Steuernummer <span class="text-red-500">*</span></label>
+                        <input type="text" name="taxId" th:value="${partner?.taxId}" required maxlength="50"
+                            class="form-control w-full">
+                    </div>
+
+                    <div>
+                        <label class="label block mb-2">Zahlungsbedingungen <span class="text-red-500">*</span></label>
+                        <select name="paymentTerms" required class="form-control w-full">
+                            <option value="">Auswählen...</option>
+                            <option value="7 Tage" th:selected="${partner?.paymentTerms == '7 Tage'}">7 Tage</option>
+                            <option value="14 Tage" th:selected="${partner?.paymentTerms == '14 Tage'}">14 Tage</option>
+                            <option value="30 Tage" th:selected="${partner?.paymentTerms == '30 Tage'}">30 Tage</option>
+                            <option value="60 Tage" th:selected="${partner?.paymentTerms == '60 Tage'}">60 Tage</option>
+                            <option value="90 Tage" th:selected="${partner?.paymentTerms == '90 Tage'}">90 Tage</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Beschreibung -->
+                <div>
+                    <label class="label block mb-2">Beschreibung</label>
+                    <textarea name="about" rows="2" class="form-control w-full resize-none"
+                        th:text="${partner?.about}"></textarea>
+                </div>
+
+                <!-- Logo URL -->
+                <div>
+                    <label class="label block mb-2">Logo URL</label>
+                    <input type="url" name="corporateImageUrl" th:value="${partner?.corporateImageUrl}"
+                        class="form-control w-full">
+                </div>
+
+                <!-- Hidden fields for financial data -->
+                <input type="hidden" name="claims" th:value="${partner?.claims}">
+                <input type="hidden" name="payable" th:value="${partner?.payable}">
+
+                <!-- Form Actions für Edit -->
+                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                    <button type="button" onclick="closeModal()" class="btn-github btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Abbrechen
+                    </button>
+
+                    <button type="submit" class="btn-github btn-success">
+                        <span id="form-loading-edit" class="htmx-indicator">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                        <span>
+                            <i class="fas fa-save"></i>
+                            Änderungen speichern
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

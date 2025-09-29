@@ -1,0 +1,348 @@
+<!-- Enhanced Partner Detail with Improved Desktop Layout -->
+<div th:fragment="partner-detail" class="github-box slide-in max-w-full overflow-hidden"
+    th:attr="data-partner-id=${partner.id}">
+    <div class="github-box-header">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-user-circle text-blue-600"></i>
+                Partner Details
+            </h3>
+            <div class="flex items-center gap-2">
+                <button
+                    th:attr="onclick=|openFinancialModal(${partner.id}, '${#strings.escapeJavaScript(partner.name)}')|"
+                    class="btn-github btn-success">
+                    <i class="fas fa-euro-sign"></i>
+                    <span class="hidden sm:inline ml-2">Finanzen</span>
+                </button>
+                <button th:attr="hx-get=@{|/partners/${partner.id}/edit|}" hx-target="#modal-container"
+                    hx-swap="innerHTML" class="btn-github btn-primary">
+                    <i class="fas fa-edit"></i>
+                    <span class="hidden sm:inline ml-2">Bearbeiten</span>
+                </button>
+                <button
+                    th:attr="hx-delete=@{|/partners/${partner.id}|},hx-confirm=|Sind Sie sicher, dass Sie ${partner.name} löschen möchten?|"
+                    hx-target="#partner-list-container" hx-swap="innerHTML" class="btn-github btn-danger">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scrollable Content Area -->
+    <div class="overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div class="p-6 space-y-8">
+
+            <!-- Partner Header - Enhanced for Desktop -->
+            <div id="partner-header" data-section-anchor="header"
+                class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
+                <div class="flex items-start gap-6">
+                    <div class="flex-shrink-0">
+                        <div th:if="${partner.corporateImageUrl != null and !partner.corporateImageUrl.isEmpty()}"
+                            class="w-20 h-20 rounded-xl overflow-hidden border-2 border-white shadow-lg">
+                            <img th:src="${partner.corporateImageUrl}" th:alt="${partner.name}"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div th:unless="${partner.corporateImageUrl != null and !partner.corporateImageUrl.isEmpty()}"
+                            class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-3xl border-2 border-white shadow-lg"
+                            th:text="${#strings.substring(partner.name, 0, 1)}">
+                            A
+                        </div>
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-3" th:text="${partner.name}">Partner Name</h2>
+
+                        <!-- Status Labels - Improved -->
+                        <div class="flex items-center flex-wrap gap-3 mb-4">
+                            <!-- TYPE -->
+                            <span th:if="${partner.type?.name() == 'SUPPLIER'}"
+                                class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                                <i class="fas fa-truck mr-1"></i>Lieferant
+                            </span>
+                            <span th:if="${partner.type?.name() == 'CUSTOMER'}"
+                                class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                                <i class="fas fa-user mr-1"></i>Kunde
+                            </span>
+                            <span th:if="${partner.type?.name() == 'PARTNER'}"
+                                class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                <i class="fas fa-handshake mr-1"></i>Partner
+                            </span>
+
+                            <!-- STATUS -->
+                            <span th:if="${partner.status?.name() == 'ACTIVE'}"
+                                class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium">
+                                <i class="fas fa-check-circle mr-1"></i>Aktiv
+                            </span>
+                            <span th:if="${partner.status?.name() == 'PENDING_APPROVAL'}"
+                                class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+                                <i class="fas fa-clock mr-1"></i>Wartend
+                            </span>
+                            <span th:if="${partner.status?.name() == 'INACTIVE'}"
+                                class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
+                                <i class="fas fa-pause-circle mr-1"></i>Inaktiv
+                            </span>
+                        </div>
+
+                        <!-- Quick Stats - Enhanced -->
+                        <div class="bg-white rounded-lg p-4 border shadow-sm">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-id-badge text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Partner ID</div>
+                                        <div class="text-lg font-bold text-gray-700" th:text="${partner.id}">1</div>
+                                    </div>
+                                </div>
+                                <div th:if="${partner.taxId}" class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-file-invoice text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Steuernummer</div>
+                                        <div class="text-lg font-bold text-gray-700" th:text="${partner.taxId}">12345
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Overview - Enhanced and More Readable -->
+            <div id="financial-section" data-section-anchor="financial"
+                class="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-6 border">
+                <div class="flex items-center justify-between mb-6">
+                    <h4 class="text-xl font-semibold text-gray-900 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-emerald-600"></i>
+                        </div>
+                        Finanzübersicht
+                    </h4>
+                    <button onclick="openAccountStatement(this.dataset.partnerId, this.dataset.partnerName)"
+                        th:attr="data-partner-id=${partner.id},data-partner-name=${partner.name}"
+                        class="btn-github btn-secondary">
+                        <i class="fas fa-list-alt"></i>
+                        <span class="ml-2">Kontoauszug</span>
+                    </button>
+                </div>
+
+                <!-- Main Balance - Prominently Displayed -->
+                <div th:with="claimsValue=${partner.financialOverview.openClaims},
+                             settledClaims=${partner.financialOverview.settledClaims},
+                             payableValue=${partner.financialOverview.openPayables},
+                             settledPayables=${partner.financialOverview.settledPayables},
+                             balanceValue=${claimsValue - payableValue}">
+
+                    <div class="text-center mb-8 bg-white rounded-xl p-6 shadow-sm border">
+                        <div class="text-5xl font-bold mb-3"
+                            th:class="${balanceValue >= 0 ? 'text-emerald-600' : 'text-red-600'}"
+                            th:text="|€${#numbers.formatDecimal(balanceValue, 1, 2)}|">€0.00</div>
+                        <div class="text-xl text-gray-600 font-medium"
+                            th:text="${balanceValue >= 0 ? 'Offenes Guthaben' : 'Offene Verbindlichkeit'}">Netto-Saldo
+                        </div>
+                        <div class="text-sm text-gray-500 mt-2">Aktueller Kontostand</div>
+                    </div>
+
+                    <!-- Financial Details Grid - Improved Layout -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="bg-white rounded-xl p-6 border shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-arrow-up text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm uppercase tracking-wide text-gray-500 font-medium">Offene
+                                        Forderungen</div>
+                                </div>
+                            </div>
+                            <div class="text-3xl font-bold text-emerald-600 mb-2"
+                                th:text="|€${#numbers.formatDecimal(partner.financialOverview.openClaims, 1, 2)}|">€0.00
+                            </div>
+                            <div class="text-sm text-gray-500">Noch nicht beglichen</div>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-6 border shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-check text-green-600"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm uppercase tracking-wide text-gray-500 font-medium">Beglichene
+                                        Forderungen</div>
+                                </div>
+                            </div>
+                            <div class="text-3xl font-bold text-green-600 mb-2"
+                                th:text="|€${#numbers.formatDecimal(partner.financialOverview.settledClaims, 1, 2)}|">
+                                €0.00</div>
+                            <div class="text-sm text-gray-500">Vom Partner bezahlt</div>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-6 border shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-arrow-down text-red-600"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm uppercase tracking-wide text-gray-500 font-medium">Offene
+                                        Verbindlichkeiten</div>
+                                </div>
+                            </div>
+                            <div class="text-3xl font-bold text-red-600 mb-2"
+                                th:text="|€${#numbers.formatDecimal(partner.financialOverview.openPayables, 1, 2)}|">
+                                €0.00</div>
+                            <div class="text-sm text-gray-500">Wir müssen noch zahlen</div>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-6 border shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-handshake text-orange-600"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm uppercase tracking-wide text-gray-500 font-medium">Beglichene
+                                        Verbindlichkeiten</div>
+                                </div>
+                            </div>
+                            <div class="text-3xl font-bold text-orange-600 mb-2"
+                                th:text="|€${#numbers.formatDecimal(partner.financialOverview.settledPayables, 1, 2)}|">
+                                €0.00</div>
+                            <div class="text-sm text-gray-500">Bereits ausgeglichen</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions - Enhanced -->
+                    <div class="mt-8 bg-white rounded-xl p-6 border shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h5 class="text-lg font-semibold text-gray-900">Letzte Transaktionen</h5>
+                            <div class="px-3 py-1 bg-gray-100 rounded-full text-sm font-medium text-gray-600"
+                                th:text="|${partner.financialOverview.transactionCount} Gesamt|">0 Total</div>
+                        </div>
+
+                        <div class="space-y-3" th:if="${!#lists.isEmpty(partner.financialOverview.recentTransactions)}">
+                            <div th:each="entry : ${partner.financialOverview.recentTransactions}"
+                                class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border hover:bg-gray-100 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                                        th:class="${entry.type == 'CLAIM' ? 'bg-emerald-100' : 'bg-red-100'}">
+                                        <i
+                                            th:class="${entry.type == 'CLAIM' ? 'fas fa-arrow-up text-emerald-600' : 'fas fa-arrow-down text-red-600'}"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900" th:text="${entry.purpose}">Transaktion
+                                        </div>
+                                        <div class="text-sm text-gray-500" th:text="${entry.dateFormatted}">01.01.2024
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xl font-bold"
+                                        th:class="${entry.type == 'CLAIM' ? 'text-emerald-600' : 'text-red-600'}"
+                                        th:text="|${entry.type == 'CLAIM' ? '+' : '-'}€${#numbers.formatDecimal(entry.amount, 1, 2)}|">
+                                        €0.00</div>
+                                    <div class="text-sm text-gray-500" th:text="${entry.statusLabel}">Offen</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center py-8 text-gray-500"
+                            th:if="${#lists.isEmpty(partner.financialOverview.recentTransactions)}">
+                            <i class="fas fa-chart-line text-4xl mb-3 text-gray-300"></i>
+                            <p>Noch keine Transaktionen vorhanden.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Information Grid -->
+            <div class="grid grid-cols-1 gap-8">
+
+                <!-- Left Column -->
+                <div class="space-y-6">
+                    <!-- Payment Terms -->
+                    <div th:if="${partner.paymentTerms}" class="bg-white rounded-xl p-6 border shadow-sm">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-calendar-alt text-blue-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-2">Zahlungsbedingungen</h4>
+                                <div class="text-xl font-medium text-gray-700" th:text="${partner.paymentTerms}">30 Tage
+                                </div>
+                                <div class="text-sm text-gray-500 mt-1">Vereinbarte Zahlungsfrist</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Contact Management -->
+                    <div id="contact-section" data-section-anchor="contacts"
+                        class="bg-white rounded-xl p-6 border shadow-sm">
+                        <div th:replace="~{fragments/contact-manager :: contact-manager}"></div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-6">
+                    <!-- Enhanced Address Management -->
+                    <div id="address-section" data-section-anchor="addresses"
+                        class="bg-white rounded-xl p-6 border shadow-sm">
+                        <div th:replace="~{fragments/address-manager :: address-manager}"></div>
+                    </div>
+
+                    <!-- Description -->
+                    <div th:if="${partner.about}" class="bg-white rounded-xl p-6 border shadow-sm">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-info-circle text-purple-600 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Beschreibung</h4>
+                                <p class="text-gray-700 leading-relaxed whitespace-pre-wrap" th:text="${partner.about}">
+                                    Beschreibungstext</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metadata - Enhanced -->
+            <div class="bg-gray-50 rounded-xl p-6 border">
+                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <i class="fas fa-info-circle text-gray-600"></i>
+                    Systemdaten
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-plus-circle text-green-600"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Erstellt</div>
+                            <div class="text-lg font-semibold text-gray-700"
+                                th:text="${partner.dateCreated != null ? #temporals.format(partner.dateCreated, 'dd.MM.yyyy HH:mm') : 'Unbekannt'}">
+                                01.01.2023 12:00</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-edit text-blue-600"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Zuletzt geändert</div>
+                            <div class="text-lg font-semibold text-gray-700"
+                                th:text="${partner.dateModified != null ? #temporals.format(partner.dateModified, 'dd.MM.yyyy HH:mm') : 'Unbekannt'}">
+                                01.01.2023 12:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Contact and Address Manager Modals within fragment -->
+    <div th:replace="~{fragments/contact-manager :: contact-form}"></div>
+    <div th:replace="~{fragments/address-manager :: address-form}"></div>
+</div>

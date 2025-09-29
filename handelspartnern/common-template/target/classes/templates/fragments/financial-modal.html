@@ -1,0 +1,464 @@
+<!-- Financial Management Modal -->
+<div id="financial-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+    style="background: rgba(0, 0, 0, 0.5); display: none;">
+    <div class="github-box w-full max-w-2xl max-h-[90vh] overflow-hidden slide-in">
+
+        <!-- Modal Header -->
+        <div class="github-box-header flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-euro-sign text-green-600"></i>
+                <span>Finanzen verwalten</span>
+                <span id="financial-partner-name" class="text-sm font-normal text-gray-600"></span>
+            </h2>
+            <button onclick="closeFinancialModal()" class="btn-github btn-secondary p-2">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 120px);">
+
+            <!-- Current Balance Display -->
+            <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-4 mb-6 text-center">
+                <div class="text-2xl font-bold mb-1" id="current-balance">€0.00</div>
+                <div class="text-sm text-gray-600" id="balance-description">Aktueller Saldo</div>
+            </div>
+
+            <!-- Transaction Form -->
+            <form id="financial-form" class="space-y-4">
+                <input type="hidden" id="partner-id">
+
+                <!-- Transaction Type -->
+                <div>
+                    <label class="label block mb-3">Transaktionsart</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" onclick="setTransactionType('claim')"
+                            class="transaction-type-btn p-4 border-2 border-green-200 rounded-lg hover:border-green-400 transition-colors"
+                            data-type="claim">
+                            <div class="text-center">
+                                <i class="fas fa-plus-circle text-green-600 text-2xl mb-2"></i>
+                                <div class="font-semibold text-green-800">Forderung</div>
+                                <div class="text-xs text-gray-600">Partner schuldet uns Geld</div>
+                            </div>
+                        </button>
+                        <button type="button" onclick="setTransactionType('payable')"
+                            class="transaction-type-btn p-4 border-2 border-red-200 rounded-lg hover:border-red-400 transition-colors"
+                            data-type="payable">
+                            <div class="text-center">
+                                <i class="fas fa-minus-circle text-red-600 text-2xl mb-2"></i>
+                                <div class="font-semibold text-red-800">Verbindlichkeit</div>
+                                <div class="text-xs text-gray-600">Wir schulden Partner Geld</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Amount -->
+                <div>
+                    <label class="label block mb-2">Betrag (€) <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">€</span>
+                        <input type="number" step="0.01" min="0.01" required id="transaction-amount"
+                            class="form-control w-full pl-10 text-lg font-semibold" placeholder="0.00">
+                    </div>
+                </div>
+
+                <!-- Purpose -->
+                <div>
+                    <label class="label block mb-2">Verwendungszweck <span class="text-red-500">*</span></label>
+                    <input type="text" required id="transaction-purpose" class="form-control w-full"
+                        placeholder="z.B. Rechnung #2024-001, Warenlieferung, Dienstleistung..." maxlength="200">
+                    <p class="mt-1 text-small text-gray-600">Beschreibung des Grundes für diese Transaktion</p>
+                </div>
+
+                <!-- Reference -->
+                <div>
+                    <label class="label block mb-2">Referenz (optional)</label>
+                    <input type="text" id="transaction-reference" class="form-control w-full"
+                        placeholder="z.B. Rechnungsnummer, Bestellnummer..." maxlength="100">
+                    <p class="mt-1 text-small text-gray-600">Interne Referenz oder Dokumentennummer</p>
+                </div>
+
+                <!-- Date -->
+                <div>
+                    <label class="label block mb-2">Datum</label>
+                    <input type="date" id="transaction-date" class="form-control w-full">
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                    <button type="button" onclick="closeFinancialModal()" class="btn-github btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Abbrechen
+                    </button>
+                    <button type="submit" class="btn-github btn-success">
+                        <i class="fas fa-save"></i>
+                        Transaktion hinzufügen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Account Statement Modal -->
+<div id="statement-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+    style="background: rgba(0, 0, 0, 0.5); display: none;">
+    <div class="github-box w-full max-w-4xl max-h-[90vh] overflow-hidden slide-in">
+
+        <!-- Modal Header -->
+        <div class="github-box-header flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-list-alt text-blue-600"></i>
+                <span>Kontoauszug</span>
+                <span id="statement-partner-name" class="text-sm font-normal text-gray-600"></span>
+            </h2>
+            <div class="flex items-center gap-2">
+                <button onclick="exportStatement()" class="btn-github btn-secondary btn-sm">
+                    <i class="fas fa-download"></i>
+                    Exportieren
+                </button>
+                <button onclick="closeStatementModal()" class="btn-github btn-secondary p-2">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 120px);">
+
+            <!-- Statement Header -->
+            <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-4 mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-2xl font-bold text-green-600" id="open-claims">€0.00</div>
+                        <div class="text-sm text-gray-600">Offene Forderungen</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-emerald-500" id="settled-claims">€0.00</div>
+                        <div class="text-sm text-gray-600">Beglichene Forderungen</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-red-600" id="open-payables">€0.00</div>
+                        <div class="text-sm text-gray-600">Offene Verbindlichkeiten</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-rose-500" id="settled-payables">€0.00</div>
+                        <div class="text-sm text-gray-600">Beglichene Verbindlichkeiten</div>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <div class="text-3xl font-bold" id="net-balance">€0.00</div>
+                    <div class="text-sm text-gray-600" id="net-balance-label">Netto-Saldo</div>
+                </div>
+            </div>
+
+            <!-- Transaction History -->
+            <div class="space-y-3" id="transaction-history">
+                <!-- Transactions will be loaded here -->
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                    <div>Lade Transaktionen...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentPartnerId = null;
+    let currentTransactionType = null;
+    const currencyFormatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+
+    function toNumber(value) {
+        const num = Number(value);
+        return Number.isFinite(num) ? num : 0;
+    }
+
+    function formatCurrency(value) {
+        return currencyFormatter.format(toNumber(value));
+    }
+
+    function sanitizeText(value, fallback = '—') {
+        if (value === null || value === undefined) {
+            return fallback;
+        }
+        const trimmed = String(value).trim();
+        return trimmed.length > 0 ? trimmed : fallback;
+    }
+
+    // Financial Modal Management
+    function openFinancialModal(partnerId, partnerName) {
+        currentPartnerId = partnerId;
+        document.getElementById('partner-id').value = partnerId;
+        document.getElementById('financial-partner-name').textContent = '- ' + partnerName;
+        document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0];
+
+        // Load current balance
+        loadPartnerBalance(partnerId);
+
+        // Show modal
+        document.getElementById('financial-modal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFinancialModal() {
+        document.getElementById('financial-modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+
+        // Reset form
+        document.getElementById('financial-form').reset();
+        currentTransactionType = null;
+        updateTransactionTypeButtons();
+    }
+
+    function setTransactionType(type) {
+        currentTransactionType = type;
+        updateTransactionTypeButtons();
+    }
+
+    function updateTransactionTypeButtons() {
+        document.querySelectorAll('.transaction-type-btn').forEach(btn => {
+            const btnType = btn.dataset.type;
+            if (btnType === currentTransactionType) {
+                btn.classList.add('ring-2', btnType === 'claim' ? 'ring-green-400' : 'ring-red-400');
+                btn.classList.remove('border-2');
+            } else {
+                btn.classList.remove('ring-2', 'ring-green-400', 'ring-red-400');
+                btn.classList.add('border-2');
+            }
+        });
+    }
+
+    function loadPartnerBalance(partnerId) {
+        // This would typically fetch from backend
+        // For now, we'll simulate
+        fetch(`/api/partners/${partnerId}/balance`)
+            .then(response => response.json())
+            .then(data => {
+                const balance = data.claims - data.payables;
+                const balanceEl = document.getElementById('current-balance');
+                const descEl = document.getElementById('balance-description');
+
+                balanceEl.textContent = '€' + Math.abs(balance).toFixed(2);
+                balanceEl.className = balance >= 0 ? 'text-2xl font-bold mb-1 text-green-600' : 'text-2xl font-bold mb-1 text-red-600';
+                descEl.textContent = balance >= 0 ? 'Aktuelles Guthaben' : 'Aktuelle Schulden';
+            })
+            .catch(() => {
+                document.getElementById('current-balance').textContent = '€0.00';
+                document.getElementById('balance-description').textContent = 'Aktueller Saldo';
+            });
+    }
+
+    // Financial Form Submit
+    document.getElementById('financial-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!currentTransactionType) {
+            alert('Bitte wählen Sie eine Transaktionsart aus.');
+            return;
+        }
+
+        const formData = {
+            partnerId: currentPartnerId,
+            type: currentTransactionType,
+            amount: document.getElementById('transaction-amount').value,
+            purpose: document.getElementById('transaction-purpose').value,
+            reference: document.getElementById('transaction-reference').value,
+            date: document.getElementById('transaction-date').value
+        };
+
+        // Submit via HTMX or fetch
+        fetch('/api/partners/financial-transaction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'HX-Request': 'true'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(async response => {
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok || !data.success) {
+                    const message = data.message || 'Transaktion konnte nicht gespeichert werden.';
+                    throw new Error(message);
+                }
+
+                // Refresh partner list
+                htmx.ajax('GET', 'partners', { target: '#partner-list-container' });
+
+                // Refresh partner details if open
+                if (currentPartnerId) {
+                    htmx.ajax('GET', `partners/${currentPartnerId}`, { target: '#partner-details-container' });
+                }
+
+                closeFinancialModal();
+                showToast('Transaktion erfolgreich hinzugefügt');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast(error.message || 'Transaktion konnte nicht gespeichert werden.', 'error');
+            });
+    });
+
+    // Account Statement Management
+    function openAccountStatement(partnerId, partnerName) {
+        currentPartnerId = partnerId;
+        document.getElementById('statement-partner-name').textContent = '- ' + partnerName;
+        document.getElementById('statement-modal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        loadAccountStatement(partnerId);
+    }
+
+    function closeStatementModal() {
+        document.getElementById('statement-modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function loadAccountStatement(partnerId) {
+        const historyContainer = document.getElementById('transaction-history');
+        historyContainer.innerHTML = `
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                <div>Lade Transaktionen...</div>
+            </div>
+        `;
+
+        // Load transaction history
+        fetch(`/api/partners/${partnerId}/transactions`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data || !data.overview) {
+                    throw new Error('Übersicht konnte nicht geladen werden.');
+                }
+
+                const overview = data.overview;
+                const openClaims = toNumber(overview.openClaims);
+                const settledClaims = toNumber(overview.settledClaims);
+                const openPayables = toNumber(overview.openPayables);
+                const settledPayables = toNumber(overview.settledPayables);
+                const netBalance = toNumber(overview.netBalance);
+
+                document.getElementById('open-claims').textContent = formatCurrency(openClaims);
+                document.getElementById('settled-claims').textContent = formatCurrency(settledClaims);
+                document.getElementById('open-payables').textContent = formatCurrency(openPayables);
+                document.getElementById('settled-payables').textContent = formatCurrency(settledPayables);
+
+                const netBalanceEl = document.getElementById('net-balance');
+                const netBalanceLabel = document.getElementById('net-balance-label');
+                netBalanceEl.textContent = formatCurrency(netBalance);
+                if (netBalance >= 0) {
+                    netBalanceEl.className = 'text-3xl font-bold text-green-600';
+                    netBalanceLabel.textContent = 'Netto-Guthaben';
+                } else {
+                    netBalanceEl.className = 'text-3xl font-bold text-red-600';
+                    netBalanceLabel.textContent = 'Netto-Verbindlichkeit';
+                }
+
+                const transactions = Array.isArray(data.transactions) ? data.transactions : [];
+                historyContainer.innerHTML = '';
+
+                if (transactions.length === 0) {
+                    historyContainer.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-inbox text-3xl mb-2"></i>
+                        <div>Keine Transaktionen gefunden</div>
+                    </div>
+                `;
+                    return;
+                }
+
+                transactions.forEach(transaction => {
+                    const transactionEl = document.createElement('div');
+                    transactionEl.className = 'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-white border rounded-lg hover:bg-gray-50';
+
+                    const type = (transaction.type || '').toString().toUpperCase();
+                    const isClaim = type === 'CLAIM';
+                    const isSettled = Boolean(transaction.isSettled);
+                    const statusLabel = transaction.statusLabel || (isSettled ? 'Beglichen' : 'Offen');
+                    const typeLabel = transaction.typeLabel || (isClaim ? 'Forderung' : 'Verbindlichkeit');
+                    const amount = toNumber(transaction.amount);
+                    const signedAmount = isClaim ? amount : amount * -1;
+                    const amountClass = isClaim ? 'text-green-600' : 'text-red-600';
+                    const statusBadgeClass = isSettled
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-amber-100 text-amber-700';
+                    const targetStatus = isSettled ? 'OPEN' : 'SETTLED';
+
+                    transactionEl.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <i class="fas ${isClaim ? 'fa-plus-circle text-green-600' : 'fa-minus-circle text-red-600'} mt-1"></i>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="font-medium">${sanitizeText(transaction.purpose, 'Ohne Verwendungszweck')}</span>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${statusBadgeClass}">${statusLabel}</span>
+                            </div>
+                            <div class="text-sm text-gray-600">${sanitizeText(transaction.reference, 'Keine Referenz')}</div>
+                            <div class="text-xs text-gray-500">${transaction.dateFormatted || (transaction.date ? new Date(transaction.date).toLocaleDateString('de-DE') : 'Kein Datum')}</div>
+                        </div>
+                    </div>
+                    <div class="text-right flex flex-col items-end gap-2">
+                        <div class="text-lg font-bold ${amountClass}">
+                            ${signedAmount >= 0 ? '+' : ''}${formatCurrency(signedAmount)}
+                        </div>
+                        <div class="text-xs text-gray-500">${typeLabel}</div>
+                        <button type="button" class="btn-github btn-secondary text-xs px-3 py-1"
+                            onclick="toggleTransactionStatus('${transaction.id}', '${targetStatus}')">
+                            <i class="fas ${isSettled ? 'fa-undo-alt' : 'fa-check'}"></i>
+                            ${isSettled ? 'Als offen markieren' : 'Als beglichen markieren'}
+                        </button>
+                    </div>
+                `;
+
+                    historyContainer.appendChild(transactionEl);
+                });
+            })
+            .catch(error => {
+                console.error('[loadAccountStatement] Error:', error);
+                historyContainer.innerHTML = `
+                <div class="text-center py-8 text-red-500">
+                    <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                    <div>Fehler beim Laden der Transaktionen</div>
+                </div>
+            `;
+            });
+    }
+
+    function exportStatement() {
+        // Implementation for exporting statement
+        window.open(`/api/partners/${currentPartnerId}/export-statement`, '_blank');
+    }
+
+    function toggleTransactionStatus(entryId, targetStatus) {
+        if (!currentPartnerId || !entryId) {
+            return;
+        }
+
+        fetch(`/api/partners/${currentPartnerId}/transactions/${entryId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'HX-Request': 'true'
+            },
+            body: JSON.stringify({ status: targetStatus })
+        })
+            .then(async response => {
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || !data.success) {
+                    const message = data.message || 'Status konnte nicht aktualisiert werden.';
+                    throw new Error(message);
+                }
+
+                showToast('Transaktionsstatus aktualisiert', 'success');
+                loadAccountStatement(currentPartnerId);
+                refreshPartnerDetails(currentPartnerId);
+                htmx.ajax('GET', 'partners', { target: '#partner-list-container' });
+            })
+            .catch(error => {
+                console.error('[toggleTransactionStatus] Error:', error);
+                showToast(error.message || 'Status konnte nicht aktualisiert werden.', 'error');
+            });
+    }
+</script>

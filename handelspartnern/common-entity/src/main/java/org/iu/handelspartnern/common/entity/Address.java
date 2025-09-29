@@ -19,6 +19,12 @@ public class Address {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "Address{" + "street='" + street + '\'' + ", city='" + city + '\'' + ", zipCode='" + zipCode + '\''
+                + ", country='" + country + '\'' + ", type='" + type + '\'' + '}';
+    }
+
     // Getters and Setters
     public String getStreet() {
         return street;

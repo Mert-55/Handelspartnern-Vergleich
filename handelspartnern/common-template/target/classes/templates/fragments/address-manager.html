@@ -1,0 +1,175 @@
+<!-- Address Manager Fragment -->
+<div th:fragment="address-manager" class="space-y-4">
+    <div class="flex items-center justify-between">
+        <h4 class="font-semibold text-gray-900 flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-red-600"></i>
+            Adressen
+        </h4>
+        <button onclick="addNewAddress(this.dataset.partnerId)" th:attr="data-partner-id=${partner.id}"
+            class="btn-github btn-success btn-sm">
+            <i class="fas fa-plus"></i>
+            Adresse hinzufügen
+        </button>
+    </div>
+
+    <!-- Address List -->
+    <div id="address-list" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div th:each="address, iterStat : ${partner.addresses}"
+            class="address-item bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow h-full"
+            th:attr="data-index=${iterStat.index},
+                     data-type=${address.type == null ? '' : address.type},
+                     data-street=${address.street == null ? '' : address.street},
+                     data-zipcode=${address.zipCode == null ? '' : address.zipCode},
+                     data-city=${address.city == null ? '' : address.city},
+                     data-country=${address.country == null ? '' : address.country}">
+
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <!-- Address Header -->
+                    <div class="flex items-center gap-3 mb-3">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center text-white">
+                            <i class="fas fa-map-marker-alt text-sm"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-medium text-gray-900" th:text="${address.type ?: 'Adresse'}">Hauptadresse
+                            </h5>
+                            <p class="text-sm text-gray-500">Geschäftsadresse</p>
+                        </div>
+                    </div>
+
+                    <!-- Address Details -->
+                    <div class="ml-13 text-sm text-gray-700 space-y-1">
+                        <div th:if="${address.street}" class="flex items-center gap-2">
+                            <i class="fas fa-road text-gray-400 w-4"></i>
+                            <span th:text="${address.street}">Musterstraße 123</span>
+                        </div>
+                        <div th:if="${!#strings.isEmpty(address.zipCode) or !#strings.isEmpty(address.city)}"
+                            class="flex items-center gap-2">
+                            <i class="fas fa-city text-gray-400 w-4"></i>
+                            <span>
+                                <span th:if="${!#strings.isEmpty(address.zipCode)}"
+                                    th:text="${address.zipCode}">12345</span>
+                                <span th:if="${!#strings.isEmpty(address.city)}"
+                                    th:text="${address.city}">Musterstadt</span>
+                            </span>
+                        </div>
+                        <div th:if="${address.country}" class="flex items-center gap-2">
+                            <i class="fas fa-flag text-gray-400 w-4"></i>
+                            <span th:text="${address.country}">Deutschland</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-1 ml-4">
+                    <button onclick="editAddress(this.dataset.partnerId, this.dataset.addressIndex)"
+                        th:attr="data-partner-id=${partner.id},data-address-index=${iterStat.index}"
+                        class="btn-ghost p-2 text-gray-500 hover:text-blue-600" title="Bearbeiten">
+                        <i class="fas fa-edit text-sm"></i>
+                    </button>
+                    <button onclick="deleteAddress(this.dataset.partnerId, this.dataset.addressIndex)"
+                        th:attr="data-partner-id=${partner.id},data-address-index=${iterStat.index}"
+                        class="btn-ghost p-2 text-gray-500 hover:text-red-600" title="Löschen">
+                        <i class="fas fa-trash text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(partner.addresses)}" class="col-span-full text-center py-8 text-gray-500">
+            <i class="fas fa-map-marker-alt text-3xl mb-3 text-gray-300"></i>
+            <p class="text-sm">Noch keine Adressen hinzugefügt</p>
+            <button onclick="addNewAddress(this.dataset.partnerId)" th:attr="data-partner-id=${partner.id}"
+                class="btn-github btn-primary btn-sm mt-3">
+                <i class="fas fa-plus"></i>
+                Erste Adresse hinzufügen
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Address Form Modal -->
+<div th:fragment="address-form" id="address-form-modal"
+    class="modal-backdrop fixed inset-0 z-50 hidden flex items-center justify-center p-4"
+    style="background: rgba(0, 0, 0, 0.5);">
+    <div class="github-box w-full max-w-md">
+        <div class="github-box-header flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <i class="fas fa-map-marker-alt text-red-600"></i>
+                <span id="address-form-title">Adresse hinzufügen</span>
+            </h3>
+            <button type="button" onclick="closeAddressForm()" class="btn-github btn-secondary p-2">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="p-6">
+            <form id="address-form" class="space-y-4">
+                <input type="hidden" id="address-partner-id">
+                <input type="hidden" id="address-index" value="-1">
+
+                <div>
+                    <label class="label block mb-2">Typ</label>
+                    <select id="address-type" class="form-control w-full">
+                        <option value="Hauptadresse">Hauptadresse</option>
+                        <option value="Rechnungsadresse">Rechnungsadresse</option>
+                        <option value="Lieferadresse">Lieferadresse</option>
+                        <option value="Filiale">Filiale</option>
+                        <option value="Lager">Lager</option>
+                        <option value="Sonstige">Sonstige</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="label block mb-2">Straße und Hausnummer <span class="text-red-500">*</span></label>
+                    <input type="text" id="address-street" required class="form-control w-full"
+                        placeholder="Musterstraße 123">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="label block mb-2">PLZ</label>
+                        <input type="text" id="address-zipcode" class="form-control w-full" placeholder="12345">
+                    </div>
+                    <div>
+                        <label class="label block mb-2">Stadt <span class="text-red-500">*</span></label>
+                        <input type="text" id="address-city" required class="form-control w-full"
+                            placeholder="Musterstadt">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="label block mb-2">Land</label>
+                    <select id="address-country" class="form-control w-full">
+                        <option value="Deutschland">Deutschland</option>
+                        <option value="Österreich">Österreich</option>
+                        <option value="Schweiz">Schweiz</option>
+                        <option value="Niederlande">Niederlande</option>
+                        <option value="Belgien">Belgien</option>
+                        <option value="Frankreich">Frankreich</option>
+                        <option value="Italien">Italien</option>
+                        <option value="Spanien">Spanien</option>
+                        <option value="Polen">Polen</option>
+                        <option value="Tschechien">Tschechien</option>
+                        <option value="Andere">Andere</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="closeAddressForm()" class="btn-github btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Abbrechen
+                    </button>
+                    <button type="submit" class="btn-github btn-success">
+                        <i class="fas fa-save"></i>
+                        Speichern
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript wird global in index.html geladen -->
