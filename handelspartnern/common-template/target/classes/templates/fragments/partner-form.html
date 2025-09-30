@@ -1,17 +1,17 @@
 <!-- Partner Form Fragment (fragments/partner-form.html) -->
 <div th:fragment="partner-form" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
     style="background: rgba(0, 0, 0, 0.5);">
-    <div class="github-box w-full max-w-3xl max-h-[90vh] overflow-hidden slide-in">
+    <div class="hp-box w-full max-w-3xl max-h-[90vh] overflow-hidden slide-in">
 
         <!-- Modal Header -->
-        <div class="github-box-header flex items-center justify-between">
+        <div class="hp-box-header flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <i
                     th:class="${isNewPartner != null && isNewPartner} ? 'fas fa-plus-circle text-green-600' : 'fas fa-edit text-blue-600'"></i>
                 <span th:text="${isNewPartner != null && isNewPartner} ? 'Neuer Partner' : 'Partner bearbeiten'">Partner
                     Form</span>
             </h2>
-            <button type="button" onclick="closeModal()" class="btn-github btn-secondary p-2">
+            <button type="button" onclick="closeModal()" class="btn-hp btn-secondary p-2">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -27,7 +27,6 @@
                 </div>
             </div>
 
-            <!-- Form für NEW Partner -->
             <form th:if="${isNewPartner != null && isNewPartner}" action="partners" method="post" hx-post="partners"
                 hx-target="#partner-list-container" hx-swap="innerHTML" hx-indicator="#form-loading" class="space-y-6">
 
@@ -146,12 +145,12 @@
 
                 <!-- Form Actions -->
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-                    <button type="button" onclick="closeModal()" class="btn-github btn-secondary">
+                    <button type="button" onclick="closeModal()" class="btn-hp btn-secondary">
                         <i class="fas fa-times"></i>
                         Abbrechen
                     </button>
 
-                    <button type="submit" class="btn-github btn-success">
+                    <button type="submit" class="btn-hp btn-success">
                         <span id="form-loading" class="htmx-indicator">
                             <i class="fas fa-spinner fa-spin"></i>
                         </span>
@@ -170,7 +169,6 @@
 
                 <input type="hidden" name="_method" value="PUT">
 
-                <!-- Gleiche Felder wie NEW form aber mit anderen Werten -->
                 <!-- Partner Name -->
                 <div>
                     <label class="label block mb-2">
@@ -241,18 +239,16 @@
                         class="form-control w-full">
                 </div>
 
-                <!-- Hidden fields for financial data -->
                 <input type="hidden" name="claims" th:value="${partner?.claims}">
                 <input type="hidden" name="payable" th:value="${partner?.payable}">
 
-                <!-- Form Actions für Edit -->
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-                    <button type="button" onclick="closeModal()" class="btn-github btn-secondary">
+                    <button type="button" onclick="closeModal()" class="btn-hp btn-secondary">
                         <i class="fas fa-times"></i>
                         Abbrechen
                     </button>
 
-                    <button type="submit" class="btn-github btn-success">
+                    <button type="submit" class="btn-hp btn-success">
                         <span id="form-loading-edit" class="htmx-indicator">
                             <i class="fas fa-spinner fa-spin"></i>
                         </span>

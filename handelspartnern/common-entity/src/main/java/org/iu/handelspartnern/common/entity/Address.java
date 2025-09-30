@@ -5,9 +5,8 @@ public class Address {
     private String city;
     private String zipCode;
     private String country;
-    private String type; // BILLING, SHIPPING, etc.
+    private String type;
 
-    // Constructors
     public Address() {
     }
 
@@ -25,7 +24,6 @@ public class Address {
                 + ", country='" + country + '\'' + ", type='" + type + '\'' + '}';
     }
 
-    // Getters and Setters
     public String getStreet() {
         return street;
     }

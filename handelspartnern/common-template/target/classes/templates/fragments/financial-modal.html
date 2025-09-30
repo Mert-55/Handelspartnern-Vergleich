@@ -1,16 +1,16 @@
 <!-- Financial Management Modal -->
 <div id="financial-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
     style="background: rgba(0, 0, 0, 0.5); display: none;">
-    <div class="github-box w-full max-w-2xl max-h-[90vh] overflow-hidden slide-in">
+    <div class="hp-box w-full max-w-2xl max-h-[90vh] overflow-hidden slide-in">
 
         <!-- Modal Header -->
-        <div class="github-box-header flex items-center justify-between">
+        <div class="hp-box-header flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <i class="fas fa-euro-sign text-green-600"></i>
                 <span>Finanzen verwalten</span>
                 <span id="financial-partner-name" class="text-sm font-normal text-gray-600"></span>
             </h2>
-            <button onclick="closeFinancialModal()" class="btn-github btn-secondary p-2">
+            <button onclick="closeFinancialModal()" class="btn-hp btn-secondary p-2">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -87,11 +87,11 @@
 
                 <!-- Actions -->
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-                    <button type="button" onclick="closeFinancialModal()" class="btn-github btn-secondary">
+                    <button type="button" onclick="closeFinancialModal()" class="btn-hp btn-secondary">
                         <i class="fas fa-times"></i>
                         Abbrechen
                     </button>
-                    <button type="submit" class="btn-github btn-success">
+                    <button type="submit" class="btn-hp btn-success">
                         <i class="fas fa-save"></i>
                         Transaktion hinzufügen
                     </button>
@@ -104,21 +104,20 @@
 <!-- Account Statement Modal -->
 <div id="statement-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
     style="background: rgba(0, 0, 0, 0.5); display: none;">
-    <div class="github-box w-full max-w-4xl max-h-[90vh] overflow-hidden slide-in">
+    <div class="hp-box w-full max-w-4xl max-h-[90vh] overflow-hidden slide-in">
 
-        <!-- Modal Header -->
-        <div class="github-box-header flex items-center justify-between">
+        <div class="hp-box-header flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <i class="fas fa-list-alt text-blue-600"></i>
                 <span>Kontoauszug</span>
                 <span id="statement-partner-name" class="text-sm font-normal text-gray-600"></span>
             </h2>
             <div class="flex items-center gap-2">
-                <button onclick="exportStatement()" class="btn-github btn-secondary btn-sm">
+                <button onclick="exportStatement()" class="btn-hp btn-secondary btn-sm">
                     <i class="fas fa-download"></i>
                     Exportieren
                 </button>
-                <button onclick="closeStatementModal()" class="btn-github btn-secondary p-2">
+                <button onclick="closeStatementModal()" class="btn-hp btn-secondary p-2">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -404,7 +403,7 @@
                             ${signedAmount >= 0 ? '+' : ''}${formatCurrency(signedAmount)}
                         </div>
                         <div class="text-xs text-gray-500">${typeLabel}</div>
-                        <button type="button" class="btn-github btn-secondary text-xs px-3 py-1"
+                        <button type="button" class="btn-hp btn-secondary text-xs px-3 py-1"
                             onclick="toggleTransactionStatus('${transaction.id}', '${targetStatus}')">
                             <i class="fas ${isSettled ? 'fa-undo-alt' : 'fa-check'}"></i>
                             ${isSettled ? 'Als offen markieren' : 'Als beglichen markieren'}

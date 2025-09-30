@@ -14,11 +14,10 @@ public class TradingPartnerFormDto {
     private String paymentTerms;
     private BigDecimal claims;
     private BigDecimal payable;
-    private String contacts; // String statt List<Contact>
-    private String addresses; // String statt List<Address>
+    private String contacts;
+    private String addresses;
     private String corporateImageUrl;
 
-    // Konstruktoren
     public TradingPartnerFormDto() {
     }
 

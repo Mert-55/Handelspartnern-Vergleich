@@ -91,7 +91,7 @@
                     <!-- View Details Button -->
                     <button th:attr="hx-get=@{|/partners/${partner.id}|},data-partner-id=${partner.id}"
                         hx-target="#partner-details-container" hx-swap="innerHTML"
-                        class="btn-github btn-secondary opacity-0 group-hover:opacity-100 transition-opacity"
+                        class="btn-hp btn-secondary opacity-0 group-hover:opacity-100 transition-opacity"
                         title="Details anzeigen">
                         <i class="fas fa-eye"></i>
                         <span class="hidden lg:inline">Details</span>
@@ -100,7 +100,7 @@
                     <!-- Financial Quick Action -->
                     <button
                         th:attr="onclick=|openFinancialModal(${partner.id}, '${#strings.escapeJavaScript(partner.name)}')|"
-                        class="btn-github btn-primary opacity-0 group-hover:opacity-100 transition-opacity bg-green-600 border-green-600 hover:bg-green-700"
+                        class="btn-hp btn-primary opacity-0 group-hover:opacity-100 transition-opacity bg-green-600 border-green-600 hover:bg-green-700"
                         title="Finanzen verwalten">
                         <i class="fas fa-euro-sign"></i>
                         <span class="hidden lg:inline">Finanzen</span>
@@ -109,7 +109,7 @@
                     <!-- Edit Button -->
                     <button th:attr="hx-get=@{|/partners/${partner.id}/edit|}" hx-target="#modal-container"
                         hx-swap="innerHTML"
-                        class="btn-github btn-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                        class="btn-hp btn-primary opacity-0 group-hover:opacity-100 transition-opacity"
                         title="Bearbeiten">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -118,8 +118,7 @@
                     <button
                         th:attr="hx-delete=@{|/partners/${partner.id}|},hx-confirm=|Sind Sie sicher, dass Sie ${partner.name} löschen möchten?|"
                         hx-target="#partner-list-container" hx-swap="innerHTML"
-                        class="btn-github btn-danger opacity-0 group-hover:opacity-100 transition-opacity"
-                        title="Löschen">
+                        class="btn-hp btn-danger opacity-0 group-hover:opacity-100 transition-opacity" title="Löschen">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -136,7 +135,7 @@
         <p class="text-gray-600 mb-6">
             Beginnen Sie mit dem Hinzufügen Ihres ersten Geschäftspartners.
         </p>
-        <button hx-get="partners/new" hx-target="#modal-container" hx-swap="innerHTML" class="btn-github btn-success">
+        <button hx-get="partners/new" hx-target="#modal-container" hx-swap="innerHTML" class="btn-hp btn-success">
             <i class="fas fa-plus"></i>
             Ersten Partner hinzufügen
         </button>

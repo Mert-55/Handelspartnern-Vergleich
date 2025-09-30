@@ -229,9 +229,8 @@ public class TradingPartner {
         recalculateFinancials();
     }
 
-    // ===== ALIAS METHODS FOR COMPATIBILITY =====
+    // ===== ALIAS METHODS =====
 
-    // For backward compatibility with service layer that expects created/updated
     public LocalDateTime getCreated() {
         return dateCreated;
     }
@@ -346,7 +345,6 @@ public class TradingPartner {
         return sb.toString().trim();
     }
 
-    // Set addresses from string representation
     public void setAddressesAsString(String addressesString) {
         getAddresses().clear();
         if (addressesString == null || addressesString.trim().isEmpty()) {

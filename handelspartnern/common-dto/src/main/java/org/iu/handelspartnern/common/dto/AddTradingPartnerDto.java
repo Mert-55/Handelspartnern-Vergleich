@@ -15,7 +15,6 @@ public record AddTradingPartnerDto(String name, Optional<String> about, Optional
         }
     }
 
-    // Alias methods for compatibility
     public PartnerType getType() {
         return type;
     }

@@ -49,7 +49,6 @@ public class ThymeleafConfig {
 
     public String render(String templateName, Map<String, Object> model) {
         try {
-            // Create Thymeleaf Context
             org.thymeleaf.context.Context context = new org.thymeleaf.context.Context();
             if (model != null) {
                 model.forEach(context::setVariable);
@@ -70,7 +69,6 @@ public class ThymeleafConfig {
         }
     }
 
-    // Simple method overload for templates without model
     public String render(String templateName) {
         return render(templateName, new HashMap<>());
     }

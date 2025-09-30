@@ -6,7 +6,6 @@ public class Contact {
     private String phone;
     private String role;
 
-    // Constructors
     public Contact() {
     }
 
@@ -23,7 +22,6 @@ public class Contact {
                 + ", role='" + role + '\'' + '}';
     }
 
-    // Getters and Setters
     public String getName() {
         return name;
     }

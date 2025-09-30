@@ -21,9 +21,6 @@ import java.util.stream.Collectors;
 
 import static spark.Spark.*;
 
-/**
- * Spark Java Controller - Exakte Kopie des Spring Controllers
- */
 public class TradingPartnerController {
 
     private static final String JSON_TYPE = "application/json";
@@ -49,8 +46,6 @@ public class TradingPartnerController {
     }
 
     private void setupRoutes() {
-
-        // ===== WEB ROUTES =====
 
         get("/", (req, res) -> {
             try {
@@ -98,7 +93,6 @@ public class TradingPartnerController {
                 WebContext context = ThymeleafContextUtils.createWebContext(req, res);
                 context.setVariable("types", PartnerType.values());
                 context.setVariable("isNewPartner", true);
-                // Use helper method for fragment processing
                 return processFragment("fragments/partner-form :: partner-form", context);
             } catch (Exception e) {
                 return ErrorUtils.handleException(e, templateEngine, req, res);
@@ -181,7 +175,7 @@ public class TradingPartnerController {
             }
         });
 
-        // Create Partner - POST /partners (Spring Boot compatible URL)
+        // Create Partner - POST /partners
         post("/partners", (req, res) -> {
             try {
                 String name = req.queryParams("name");
@@ -207,7 +201,6 @@ public class TradingPartnerController {
 
                 service.createPartner(dto);
 
-                // Return updated partner list for HTMX requests
                 WebContext context = ThymeleafContextUtils.createWebContext(req, res);
                 List<TradingPartnerListDto> partners = service.getAllPartners();
                 context.setVariable("partners", partners);
@@ -230,7 +223,6 @@ public class TradingPartnerController {
 
                 TradingPartner existing = existingOpt.get();
 
-                // Update basic fields
                 String name = req.queryParams("name");
                 String about = req.queryParams("about");
                 String taxId = req.queryParams("taxId");
@@ -275,7 +267,6 @@ public class TradingPartnerController {
 
                 TradingPartner existing = existingOpt.get();
 
-                // Update basic fields
                 String name = req.queryParams("name");
                 String about = req.queryParams("about");
                 String taxId = req.queryParams("taxId");
@@ -301,7 +292,6 @@ public class TradingPartnerController {
 
                 TradingPartner updated = service.updatePartner(id, existing);
 
-                // Return updated partner details for HTMX requests
                 WebContext context = ThymeleafContextUtils.createWebContext(req, res);
                 context.setVariable("partner", updated);
                 context.setVariable("types", PartnerType.values());
@@ -332,7 +322,6 @@ public class TradingPartnerController {
                 Long id = Long.parseLong(req.params(":id"));
                 service.deletePartner(id);
 
-                // Return updated partner list for HTMX requests
                 WebContext context = ThymeleafContextUtils.createWebContext(req, res);
                 List<TradingPartnerListDto> partners = service.getAllPartners();
                 context.setVariable("partners", partners);
@@ -821,7 +810,7 @@ public class TradingPartnerController {
             }
         });
 
-        // ===== FRAGMENT ROUTES (für HTMX) =====
+        // ===== FRAGMENT ROUTES =====
 
         // Partner List Fragment - GET /fragments/partner-list
         get("/fragments/partner-list", (req, res) -> {

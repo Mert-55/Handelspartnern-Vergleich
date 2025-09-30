@@ -12,48 +12,47 @@
     <link rel="stylesheet" th:href="@{/vendor/fontawesome/all.min.css}" href="/vendor/fontawesome/all.min.css">
     <link rel="stylesheet" th:href="@{/vendor/fonts/inter.css}" href="/vendor/fonts/inter.css">
 
-    <!-- Custom GitHub-like styling -->
     <style>
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         :root {
-            --github-canvas-default: #ffffff;
-            --github-canvas-subtle: #f6f8fa;
-            --github-border-default: #d0d7de;
-            --github-border-muted: #d1d9e0;
-            --github-fg-default: #1f2328;
-            --github-fg-muted: #656d76;
-            --github-accent-emphasis: #0969da;
-            --github-success-emphasis: #1a7f37;
-            --github-danger-emphasis: #d1242f;
-            --github-attention-emphasis: #9a6700;
-            --github-shadow-small: 0 1px 0 rgba(31, 35, 40, 0.04);
-            --github-shadow-medium: 0 3px 6px rgba(140, 149, 159, 0.15);
-            --github-shadow-large: 0 8px 24px rgba(140, 149, 159, 0.2);
+            --hp-canvas-default: #ffffff;
+            --hp-canvas-subtle: #f6f8fa;
+            --hp-border-default: #d0d7de;
+            --hp-border-muted: #d1d9e0;
+            --hp-fg-default: #1f2328;
+            --hp-fg-muted: #656d76;
+            --hp-accent-emphasis: #0969da;
+            --hp-success-emphasis: #1a7f37;
+            --hp-danger-emphasis: #d1242f;
+            --hp-attention-emphasis: #9a6700;
+            --hp-shadow-small: 0 1px 0 rgba(31, 35, 40, 0.04);
+            --hp-shadow-medium: 0 3px 6px rgba(140, 149, 159, 0.15);
+            --hp-shadow-large: 0 8px 24px rgba(140, 149, 159, 0.2);
         }
 
         body {
-            background: var(--github-canvas-subtle);
-            color: var(--github-fg-default);
+            background: var(--hp-canvas-subtle);
+            color: var(--hp-fg-default);
         }
 
-        .github-box {
-            background: var(--github-canvas-default);
-            border: 1px solid var(--github-border-default);
+        .hp-box {
+            background: var(--hp-canvas-default);
+            border: 1px solid var(--hp-border-default);
             border-radius: 6px;
-            box-shadow: var(--github-shadow-small);
+            box-shadow: var(--hp-shadow-small);
         }
 
-        .github-box-header {
-            background: var(--github-canvas-subtle);
-            border-bottom: 1px solid var(--github-border-default);
+        .hp-box-header {
+            background: var(--hp-canvas-subtle);
+            border-bottom: 1px solid var(--hp-border-default);
             border-radius: 6px 6px 0 0;
             padding: 16px;
         }
 
-        .btn-github {
+        .btn-hp {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -71,61 +70,61 @@
             white-space: nowrap;
         }
 
-        .btn-github:disabled {
+        .btn-hp:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
 
         .btn-primary {
-            background: var(--github-accent-emphasis);
+            background: var(--hp-accent-emphasis);
             border-color: rgba(31, 35, 40, 0.15);
             color: #fff;
         }
 
         .btn-primary:hover:not(:disabled) {
             background: #0860ca;
-            box-shadow: var(--github-shadow-medium);
+            box-shadow: var(--hp-shadow-medium);
         }
 
         .btn-success {
-            background: var(--github-success-emphasis);
+            background: var(--hp-success-emphasis);
             border-color: rgba(31, 35, 40, 0.15);
             color: #fff;
         }
 
         .btn-success:hover:not(:disabled) {
             background: #1a7f37;
-            box-shadow: var(--github-shadow-medium);
+            box-shadow: var(--hp-shadow-medium);
         }
 
         .btn-danger {
-            background: var(--github-danger-emphasis);
+            background: var(--hp-danger-emphasis);
             border-color: rgba(31, 35, 40, 0.15);
             color: #fff;
         }
 
         .btn-danger:hover:not(:disabled) {
             background: #c93c37;
-            box-shadow: var(--github-shadow-medium);
+            box-shadow: var(--hp-shadow-medium);
         }
 
         .btn-secondary {
-            background: var(--github-canvas-default);
-            border-color: var(--github-border-default);
-            color: var(--github-fg-default);
+            background: var(--hp-canvas-default);
+            border-color: var(--hp-border-default);
+            color: var(--hp-fg-default);
         }
 
         .btn-secondary:hover:not(:disabled) {
-            background: var(--github-canvas-subtle);
-            border-color: var(--github-border-muted);
-            box-shadow: var(--github-shadow-medium);
+            background: var(--hp-canvas-subtle);
+            border-color: var(--hp-border-muted);
+            box-shadow: var(--hp-shadow-medium);
         }
 
         .form-control {
-            background: var(--github-canvas-default);
-            border: 1px solid var(--github-border-default);
+            background: var(--hp-canvas-default);
+            border: 1px solid var(--hp-border-default);
             border-radius: 6px;
-            color: var(--github-fg-default);
+            color: var(--hp-fg-default);
             font-size: 14px;
             line-height: 20px;
             padding: 5px 12px;
@@ -133,24 +132,24 @@
         }
 
         .form-control:focus {
-            border-color: var(--github-accent-emphasis);
+            border-color: var(--hp-accent-emphasis);
             box-shadow: inset 0 1px 0 rgba(208, 215, 222, 0.2), 0 0 0 3px rgba(9, 105, 218, 0.3);
             outline: none;
         }
 
         .form-control:invalid {
-            border-color: var(--github-danger-emphasis);
+            border-color: var(--hp-danger-emphasis);
         }
 
         .label {
-            color: var(--github-fg-default);
+            color: var(--hp-fg-default);
             font-size: 14px;
             font-weight: 600;
             line-height: 20px;
         }
 
         .text-small {
-            color: var(--github-fg-muted);
+            color: var(--hp-fg-muted);
             font-size: 12px;
         }
 
@@ -187,9 +186,9 @@
         }
 
         .counter {
-            background: var(--github-canvas-subtle);
+            background: var(--hp-canvas-subtle);
             border-radius: 2em;
-            color: var(--github-fg-default);
+            color: var(--hp-fg-default);
             display: inline-block;
             font-size: 12px;
             font-weight: 500;
@@ -256,7 +255,7 @@
     <div class="max-w-7xl mx-auto p-4">
 
         <!-- Header -->
-        <header class="github-box sticky top-0 z-40 mb-6">
+        <header class="hp-box sticky top-0 z-40 mb-6">
             <div class="px-4 py-4 sm:px-6">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -272,7 +271,7 @@
 
                     <!-- Add Partner Button -->
                     <button hx-get="partners/new" hx-target="#modal-container" hx-swap="innerHTML"
-                        class="btn-github btn-success">
+                        class="btn-hp btn-success">
                         <i class="fas fa-plus"></i>
                         <span class="hidden sm:inline">Neuer Partner</span>
                     </button>
@@ -281,8 +280,8 @@
         </header>
 
         <!-- Search & Filters -->
-        <div class="github-box mb-6">
-            <div class="github-box-header">
+        <div class="hp-box mb-6">
+            <div class="hp-box-header">
                 <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2">
                     <i class="fas fa-filter"></i>
                     Filter & Suche
@@ -334,7 +333,7 @@
                         </div>
 
                         <div class="flex items-end">
-                            <button type="button" onclick="clearAllFilters()" class="btn-github btn-secondary w-full">
+                            <button type="button" onclick="clearAllFilters()" class="btn-hp btn-secondary w-full">
                                 <i class="fas fa-times"></i>
                                 Filter zurücksetzen
                             </button>
@@ -349,8 +348,8 @@
 
             <!-- Partner List -->
             <div>
-                <div class="github-box">
-                    <div class="github-box-header">
+                <div class="hp-box">
+                    <div class="hp-box-header">
                         <div class="flex items-center justify-between">
                             <h3 class="text-sm font-semibold text-gray-900 flex items-center gap-2">
                                 <i class="fas fa-users"></i>
@@ -369,10 +368,9 @@
                 </div>
             </div>
 
-            <!-- Sidebar -->
             <div class="lg:col-span-1">
                 <div id="partner-details-container">
-                    <div class="github-box">
+                    <div class="hp-box">
                         <div class="p-6 text-center">
                             <div
                                 class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -396,21 +394,20 @@
     <!-- Financial Modal -->
     <div id="financial-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
         style="background: rgba(0, 0, 0, 0.5); display: none;">
-        <div class="github-box w-full max-w-2xl max-h-[90vh] overflow-hidden slide-in">
+        <div class="hp-box w-full max-w-2xl max-h-[90vh] overflow-hidden slide-in">
 
             <!-- Modal Header -->
-            <div class="github-box-header flex items-center justify-between">
+            <div class="hp-box-header flex items-center justify-between">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <i class="fas fa-euro-sign text-green-600"></i>
                     <span>Finanzen verwalten</span>
                     <span id="financial-partner-name" class="text-sm font-normal text-gray-600"></span>
                 </h2>
-                <button type="button" onclick="closeFinancialModal()" class="btn-github btn-secondary p-2">
+                <button type="button" onclick="closeFinancialModal()" class="btn-hp btn-secondary p-2">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
 
-            <!-- Modal Body -->
             <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 120px);">
 
                 <!-- Current Balance Display -->
@@ -483,11 +480,11 @@
 
                     <!-- Actions -->
                     <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-                        <button type="button" onclick="closeFinancialModal()" class="btn-github btn-secondary">
+                        <button type="button" onclick="closeFinancialModal()" class="btn-hp btn-secondary">
                             <i class="fas fa-times"></i>
                             Abbrechen
                         </button>
-                        <button type="submit" class="btn-github btn-success">
+                        <button type="submit" class="btn-hp btn-success">
                             <i class="fas fa-save"></i>
                             Transaktion hinzufügen
                         </button>
@@ -500,21 +497,21 @@
     <!-- Account Statement Modal -->
     <div id="statement-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
         style="background: rgba(0, 0, 0, 0.5); display: none;">
-        <div class="github-box w-full max-w-4xl max-h-[90vh] overflow-hidden slide-in">
+        <div class="hp-box w-full max-w-4xl max-h-[90vh] overflow-hidden slide-in">
 
             <!-- Modal Header -->
-            <div class="github-box-header flex items-center justify-between">
+            <div class="hp-box-header flex items-center justify-between">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <i class="fas fa-list-alt text-blue-600"></i>
                     <span>Kontoauszug</span>
                     <span id="statement-partner-name" class="text-sm font-normal text-gray-600"></span>
                 </h2>
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="exportStatement()" class="btn-github btn-secondary btn-sm">
+                    <button type="button" onclick="exportStatement()" class="btn-hp btn-secondary btn-sm">
                         <i class="fas fa-download"></i>
                         Exportieren
                     </button>
-                    <button type="button" onclick="closeStatementModal()" class="btn-github btn-secondary p-2">
+                    <button type="button" onclick="closeStatementModal()" class="btn-hp btn-secondary p-2">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -553,16 +550,15 @@
         </div>
     </div>
 
-    <!-- ===== ALLE JAVASCRIPT-FUNKTIONEN KORREKT DEFINIERT ===== -->
     <script>
-        // Global variables
+        // Global vars
         let currentPartnerId = null;
         let currentTransactionType = null;
         let pendingDetailFocus = null;
         let detailScrollPreference = null;
         let currentStatementPartnerId = null;
 
-        // ===== KORRIGIERTE UTILITY FUNKTIONEN =====
+        // ===== UTILS =====
 
         function showToast(message, type = 'success', duration = 4000) {
             console.log('[Toast]', type + ':', message);
@@ -580,7 +576,7 @@
             }, duration);
         }
 
-        // ===== FILTER FUNKTIONEN =====
+        // ===== FILTERS =====
 
         function clearAllFilters() {
             console.log('[clearAllFilters] Called');
@@ -612,7 +608,7 @@
             clearAllFilters();
         }
 
-        // ===== MODAL MANAGEMENT =====
+        // ===== MODALS =====
 
         function closeModal() {
             console.log('[closeModal] Called');
@@ -624,7 +620,7 @@
             document.body.style.overflow = 'auto';
         }
 
-        // ===== FINANCIAL MODAL FUNKTIONEN =====
+        // ===== FINANCIAL MODAL =====
 
         function openFinancialModal(partnerId, partnerName) {
             console.log('[openFinancialModal] Called with:', partnerId, partnerName);
@@ -704,7 +700,7 @@
                 });
         }
 
-        // ===== STATEMENT MODAL FUNKTIONEN =====
+        // ===== STATEMENT MODAL =====
 
         function openAccountStatement(partnerId, partnerName) {
             console.log('[openAccountStatement] Called with:', partnerId, partnerName);
@@ -832,7 +828,7 @@
             const buttonLabel = isSettled ? 'Als offen markieren' : 'Als beglichen markieren';
             const buttonIcon = isSettled ? 'fa-undo' : 'fa-check';
             const nextStatus = isSettled ? 'OPEN' : 'SETTLED';
-            const buttonClass = isSettled ? 'btn-github btn-secondary btn-sm' : 'btn-github btn-success btn-sm';
+            const buttonClass = isSettled ? 'btn-hp btn-secondary btn-sm' : 'btn-hp btn-success btn-sm';
             const amountLabel = formatSignedAmount(entry);
 
             return `
@@ -1092,7 +1088,7 @@
             }
 
             container.innerHTML = `
-                <div class="github-box">
+                <div class="hp-box">
                     <div class="p-6 text-center">
                         <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-user-plus text-2xl text-gray-400"></i>
@@ -1158,7 +1154,7 @@
             }
         }
 
-        // ===== CONTACT MANAGEMENT =====
+        // ===== CONTACT =====
 
         function openContactModal(partnerId, contactIndex) {
             const modal = document.getElementById('contact-form-modal');
@@ -1289,7 +1285,7 @@
         window.deleteContact = deleteContact;
         window.closeContactForm = closeContactForm;
 
-        // ===== ADDRESS MANAGEMENT =====
+        // ===== ADDRESS MGT =====
 
         function openAddressModal(partnerId, addressIndex) {
             const modal = document.getElementById('address-form-modal');
@@ -1574,7 +1570,6 @@
             }
         });
 
-        // Debug: Log function availability
         console.log('[Debug] Functions loaded:', {
             clearAllFilters: typeof clearAllFilters,
             clearFilters: typeof clearFilters,

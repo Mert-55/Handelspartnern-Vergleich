@@ -44,7 +44,6 @@ public class TradingPartnerController {
     @Autowired
     private TradingPartnerService tradingPartnerService;
 
-    // Main Page - Full HTML
     @GetMapping("/")
     public String index(Model model,
             @RequestParam(required = false) PartnerType type,
@@ -71,7 +70,7 @@ public class TradingPartnerController {
         }
     }
 
-    // Partner List Fragment - KORRIGIERT
+    // Partner List Fragment
     @GetMapping("/partners")
     public String partnersList(Model model,
             @RequestParam(required = false) PartnerType type,
@@ -87,7 +86,6 @@ public class TradingPartnerController {
 
             System.out.println("Found " + partners.size() + " partners");
 
-            // Return fragment for HTMX requests
             if (isHtmxRequest(request)) {
                 return "fragments/partner-list :: partner-list";
             }
@@ -98,7 +96,6 @@ public class TradingPartnerController {
             System.err.println("Error in partnersList: " + e.getMessage());
             e.printStackTrace();
 
-            // Fallback
             model.addAttribute("partners", new ArrayList<TradingPartnerListDto>());
 
             if (isHtmxRequest(request)) {
@@ -109,7 +106,7 @@ public class TradingPartnerController {
         }
     }
 
-    // Partner Detail Fragment - KORRIGIERT
+    // Partner Detail Fragment
     @GetMapping("/partners/{id}")
     public String partnerDetail(@PathVariable Long id, Model model, HttpServletRequest request) {
         try {
@@ -133,7 +130,7 @@ public class TradingPartnerController {
         return "redirect:/";
     }
 
-    // New Partner Form Fragment - KORRIGIERT
+    // New Partner Form Fragment
     @GetMapping("/partners/new")
     public String newPartnerForm(Model model, HttpServletRequest request) {
         try {
@@ -162,7 +159,7 @@ public class TradingPartnerController {
         }
     }
 
-    // Edit Partner Form Fragment - KORRIGIERT
+    // Edit Partner Form Fragment
     @GetMapping("/partners/{id}/edit")
     public String editPartnerForm(@PathVariable Long id, Model model, HttpServletRequest request) {
         try {
@@ -189,7 +186,7 @@ public class TradingPartnerController {
         return "redirect:/";
     }
 
-    // Create Partner - KORRIGIERT
+    // Create Partner
     @PostMapping("/partners")
     public String createPartner(@RequestParam("name") String name,
             @RequestParam("type") PartnerType type,
@@ -217,7 +214,6 @@ public class TradingPartnerController {
                 throw new IllegalArgumentException("Steuernummer ist erforderlich");
             }
 
-            // Create DTO
             AddTradingPartnerDto dto = new AddTradingPartnerDto(
                     name,
                     Optional.ofNullable(about),
@@ -241,7 +237,6 @@ public class TradingPartnerController {
 
             System.out.println("Partner created successfully");
 
-            // Return updated partner list
             List<TradingPartnerListDto> partners = tradingPartnerService.getAllPartners();
             model.addAttribute("partners", partners);
 
@@ -253,7 +248,6 @@ public class TradingPartnerController {
             System.err.println("Error creating partner: " + e.getMessage());
             e.printStackTrace();
 
-            // Return to form with error
             TradingPartner partnerForm = new TradingPartner();
             partnerForm.setName(name);
             partnerForm.setType(type);
@@ -279,7 +273,7 @@ public class TradingPartnerController {
         return "redirect:/";
     }
 
-    // Update Partner - KORRIGIERT
+    // Update Partner
     @PutMapping("/partners/{id}")
     public String updatePartner(@PathVariable Long id,
             @RequestParam("name") String name,
@@ -320,7 +314,6 @@ public class TradingPartnerController {
 
                 tradingPartnerService.updatePartner(id, partner);
 
-                // Return updated partner list
                 List<TradingPartnerListDto> partners = tradingPartnerService.getAllPartners();
                 model.addAttribute("partners", partners);
 
@@ -337,7 +330,7 @@ public class TradingPartnerController {
         return "redirect:/";
     }
 
-    // Delete Partner - KORRIGIERT
+    // Delete Partner
     @DeleteMapping("/partners/{id}")
     public String deletePartner(@PathVariable Long id, Model model, HttpServletRequest request) {
         try {
@@ -367,13 +360,11 @@ public class TradingPartnerController {
         return "redirect:/";
     }
 
-    // Utility method to check HTMX requests
     private boolean isHtmxRequest(HttpServletRequest request) {
         return "true".equals(request.getHeader("HX-Request"));
     }
 }
 
-// SEPARATE API-CONTROLLER FOR REST ENDPOINTS
 @RestController
 @RequestMapping("/api")
 class ApiController {
@@ -381,7 +372,6 @@ class ApiController {
     @Autowired
     private TradingPartnerService tradingPartnerService;
 
-    // Financial Balance
     @GetMapping("/partners/{id}/balance")
     public ResponseEntity<?> getPartnerBalance(@PathVariable Long id) {
         try {

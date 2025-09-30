@@ -165,7 +165,6 @@ public class TradingPartnerService {
 
         } catch (Exception e) {
             System.err.println("Error converting to DTO: " + e.getMessage());
-            // Return basic DTO with minimal info
             return new TradingPartnerListDto(
                     partner.getId(),
                     partner.getName() != null ? partner.getName() : "Unknown",

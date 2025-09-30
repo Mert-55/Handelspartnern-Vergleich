@@ -60,15 +60,15 @@ Dieses Dokument listet alle externen Dependencies und deren Versionen auf, die i
 ## Kompatibilität und Browser-Support
 
 ### Browser-Kompatibilität
-- **Chrome**: 90+ ✅
-- **Firefox**: 88+ ✅
-- **Safari**: 14+ ✅
-- **Edge**: 90+ ✅
+- **Chrome**: 90+
+- **Firefox**: 88+
+- **Safari**: 14+
+- **Edge**: 90+
 
 ### Mobile Support
-- **iOS Safari**: 14+ ✅
-- **Chrome Mobile**: 90+ ✅
-- **Samsung Internet**: 14+ ✅
+- **iOS Safari**: 14+
+- **Chrome Mobile**: 90+
+- **Samsung Internet**: 14+
 
 ## Performance Metriken
 
@@ -86,15 +86,15 @@ Dieses Dokument listet alle externen Dependencies und deren Versionen auf, die i
 ## Sicherheitsaspekte
 
 ### Keine externen Abhängigkeiten
-- ✅ Alle Ressourcen sind lokal gehostet
-- ✅ Keine Third-Party CDN Dependencies
-- ✅ Keine Cross-Origin Requests
-- ✅ CSP (Content Security Policy) kompatibel
+- Alle Ressourcen sind lokal gehostet
+- Keine Third-Party CDN Dependencies
+- Keine Cross-Origin Requests
+- CSP (Content Security Policy) kompatibel
 
 ### Lizenz-Compliance
-- ✅ Alle Lizenzen erlauben kommerzielle Nutzung
-- ✅ Attribution wird korrekt in Lizenz-Dateien geführt
-- ✅ Wissenschaftliche Arbeit konform
+- Alle Lizenzen erlauben kommerzielle Nutzung
+- Attribution wird korrekt in Lizenz-Dateien geführt
+- Wissenschaftliche Arbeit konform
 
 ## Wartung und Updates
 
@@ -106,4 +106,4 @@ Dieses Dokument listet alle externen Dependencies und deren Versionen auf, die i
 ### Letzte Aktualisierung
 **Datum**: 30. September 2025
 **Verantwortlich**: Automatisierte Abhängigkeits-Migration
-**Status**: ✅ Produktionsbereit
+**Status**: Instabil

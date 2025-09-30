@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import static spark.Spark.*;
 
 /**
- * Spark Java Application - Manual Configuration (Im Gegensatz zu Spring
+ * Spark Java Application Manual Configuration (Im Gegensatz zu Spring
  * Boot's @SpringBootApplication Auto-Configuration)
  */
 public class SparkWebApplication {
@@ -19,14 +19,14 @@ public class SparkWebApplication {
     private static final Logger logger = LoggerFactory.getLogger(SparkWebApplication.class);
 
     public static void main(String[] args) {
-        // Spark Java Manual Configuration (kein Auto-Config wie Spring Boot)
+        // Spark Java Manual Configuration - kein Auto-Config wie Spring Boot
         configureServer();
 
         // CORS Configuration
         configureCors();
 
         try {
-            // Manual Dependency Setup (No DI Container wie Spring)
+            // Manual Dependency Setup - No DI Container wie Spring
             DatabaseConfig databaseConfig = new DatabaseConfig();
             databaseConfig.initialize();
 
@@ -35,11 +35,11 @@ public class SparkWebApplication {
             TradingPartnerRepository repository = new TradingPartnerRepository(databaseConfig);
             TradingPartnerService service = new TradingPartnerService(repository);
 
-            // Register Controller with Routes (Manual - kein Component Scan wie Spring)
+            // Register Controller with Routes kein Component Scan wie Spring
             new TradingPartnerController(service,
                     thymeleafConfig.getTemplateEngine());
 
-            // Health Check Endpoint (Manual - kein Actuator wie Spring Boot)
+            // Health Check Endpoint - kein Actuator wie Spring Boot
             setupHealthCheck();
 
             // Graceful Shutdown Hook
@@ -49,35 +49,34 @@ public class SparkWebApplication {
                 stop();
             }));
 
-            // Await Initialization with timeout
             try {
                 awaitInitialization();
-                logger.info("🔥 Spark Java Application started successfully!");
-                logger.info("📊 Health check: http://localhost:4568/health");
-                logger.info("🏠 Homepage: http://localhost:4568/");
-                logger.info("📱 Port: 4568 (vs Spring Boot: 8080)");
+                logger.info("Spark Java Application ignited!");
+                logger.info("Health check: http://localhost:4568/health");
+                logger.info("Homepage: http://localhost:4568/");
+                logger.info("Port: 4568 (vs Spring Boot: 8080)");
             } catch (Exception initException) {
-                logger.error("❌ Failed to initialize Spark server: " + initException.getMessage());
-                logger.info("💡 Port 4568 might be in use. Trying alternative port 4569...");
+                logger.error("Failed to initialize Spark server: " + initException.getMessage());
+                logger.info("Port 4568 might be in use. Trying alternative port 4569...");
 
                 // Try alternative port
                 stop();
                 port(4569);
                 awaitInitialization();
-                logger.info("🔥 Spark Java Application started on alternative port!");
-                logger.info("🏠 Homepage: http://localhost:4569/");
+                logger.info("Spark Java Application started on alternative port!");
+                logger.info("Homepage: http://localhost:4568/");
             }
 
         } catch (Exception e) {
-            logger.error("❌ Failed to start Spark application", e);
-            logger.info("💡 Try stopping other Java processes or use a different port");
+            logger.error("Failed to start Spark application", e);
+            logger.info("Try stopping other Java processes or use a different port");
             System.exit(1);
         }
     }
 
     private static void configureServer() {
-        // Server Configuration (Manual - kein application.yml wie Spring Boot)
-        port(4568); // Different port from Spring Boot (8080) and avoiding 4567 conflicts
+        // Server Configuration Manual - kein application.yml wie Spring Boot
+        port(4568);
 
         // Static files setup
         staticFiles.location("/static");

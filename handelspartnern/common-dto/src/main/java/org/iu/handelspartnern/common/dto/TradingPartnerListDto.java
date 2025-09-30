@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 public record TradingPartnerListDto(Long id, String name, String corporateImageUrl, PartnerType type,
                 PartnerStatus status, BigDecimal claims, BigDecimal payable, LocalDateTime dateModified) {
 
-        // Getter methods for compatibility
         public Long getId() {
                 return id;
         }
@@ -41,7 +40,6 @@ public record TradingPartnerListDto(Long id, String name, String corporateImageU
                 return dateModified;
         }
 
-        // Alias for backward compatibility with service layer
         public LocalDateTime getUpdated() {
                 return dateModified;
         }
