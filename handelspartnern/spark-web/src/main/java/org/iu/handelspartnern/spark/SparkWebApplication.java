@@ -2,7 +2,7 @@ package org.iu.handelspartnern.spark;
 
 import org.iu.handelspartnern.spark.config.DatabaseConfig;
 import org.iu.handelspartnern.spark.config.ThymeleafConfig;
-import org.iu.handelspartnern.spark.routes.TradingPartnerRoutes;
+import org.iu.handelspartnern.spark.controller.TradingPartnerController;
 import org.iu.handelspartnern.spark.service.TradingPartnerService;
 import org.iu.handelspartnern.spark.repository.TradingPartnerRepository;
 import org.slf4j.Logger;
@@ -35,9 +35,9 @@ public class SparkWebApplication {
             TradingPartnerRepository repository = new TradingPartnerRepository(databaseConfig);
             TradingPartnerService service = new TradingPartnerService(repository);
 
-            // Register Routes (Manual - kein Component Scan wie Spring)
-            TradingPartnerRoutes routes = new TradingPartnerRoutes(service, thymeleafConfig);
-            routes.registerRoutes();
+            // Register Controller with Routes (Manual - kein Component Scan wie Spring)
+            new TradingPartnerController(service,
+                    thymeleafConfig.getTemplateEngine());
 
             // Health Check Endpoint (Manual - kein Actuator wie Spring Boot)
             setupHealthCheck();
@@ -49,24 +49,35 @@ public class SparkWebApplication {
                 stop();
             }));
 
-            // Await Initialization
-            awaitInitialization();
+            // Await Initialization with timeout
+            try {
+                awaitInitialization();
+                logger.info("🔥 Spark Java Application started successfully!");
+                logger.info("📊 Health check: http://localhost:4568/health");
+                logger.info("🏠 Homepage: http://localhost:4568/");
+                logger.info("📱 Port: 4568 (vs Spring Boot: 8080)");
+            } catch (Exception initException) {
+                logger.error("❌ Failed to initialize Spark server: " + initException.getMessage());
+                logger.info("💡 Port 4568 might be in use. Trying alternative port 4569...");
 
-            logger.info("🔥 Spark Java Application started successfully!");
-            logger.info("📊 Health check: http://localhost:4567/health");
-            logger.info("🏠 Homepage: http://localhost:4567/");
-            logger.info("🔗 API Base: http://localhost:4567/api/partners");
-            logger.info("📱 Port: 4567 (vs Spring Boot: 8080)");
+                // Try alternative port
+                stop();
+                port(4569);
+                awaitInitialization();
+                logger.info("🔥 Spark Java Application started on alternative port!");
+                logger.info("🏠 Homepage: http://localhost:4569/");
+            }
 
         } catch (Exception e) {
             logger.error("❌ Failed to start Spark application", e);
+            logger.info("💡 Try stopping other Java processes or use a different port");
             System.exit(1);
         }
     }
 
     private static void configureServer() {
         // Server Configuration (Manual - kein application.yml wie Spring Boot)
-        port(4567); // Different port from Spring Boot (8080)
+        port(4568); // Different port from Spring Boot (8080) and avoiding 4567 conflicts
 
         // Static files setup
         staticFiles.location("/static");
@@ -112,7 +123,7 @@ public class SparkWebApplication {
         // Health Check Endpoint (Manual - kein Spring Boot Actuator)
         get("/health", (req, res) -> {
             res.type("application/json");
-            return "{\n" + "  \"status\": \"UP\",\n" + "  \"framework\": \"Spark Java\",\n" + "  \"port\": 4567,\n"
+            return "{\n" + "  \"status\": \"UP\",\n" + "  \"framework\": \"Spark Java\",\n" + "  \"port\": 4568,\n"
                     + "  \"version\": \"1.0-SNAPSHOT\",\n" + "  \"timestamp\": \"" + java.time.LocalDateTime.now()
                     + "\",\n" + "  \"comparison\": \"vs Spring Boot on 8080\"\n" + "}";
         });

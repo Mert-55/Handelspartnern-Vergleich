@@ -24,6 +24,8 @@ public class DatabaseConfig {
         // Hibernate Properties
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+        configuration.setProperty("hibernate.physical_naming_strategy",
+                "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl");
         configuration.setProperty("hibernate.show_sql", "true");
         configuration.setProperty("hibernate.format_sql", "true");
 
