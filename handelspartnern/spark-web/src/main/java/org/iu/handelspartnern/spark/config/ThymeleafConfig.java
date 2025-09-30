@@ -3,8 +3,11 @@ package org.iu.handelspartnern.spark.config;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 
 /**
  * Manual Thymeleaf Configuration für Spark Java (Im Gegensatz zu Spring Boot's
@@ -18,9 +21,19 @@ public class ThymeleafConfig {
         this.templateEngine = createTemplateEngine();
     }
 
+    public TemplateEngine getTemplateEngine() {
+        return templateEngine;
+    }
+
     private TemplateEngine createTemplateEngine() {
-        TemplateEngine engine = new TemplateEngine();
+        SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(createTemplateResolver());
+        engine.setEnableSpringELCompiler(true);
+        engine.addDialect(new Java8TimeDialect());
+
+        // Enable fragment processing
+        engine.setMessageResolver(new org.thymeleaf.messageresolver.StandardMessageResolver());
+
         return engine;
     }
 
@@ -40,6 +53,13 @@ public class ThymeleafConfig {
             org.thymeleaf.context.Context context = new org.thymeleaf.context.Context();
             if (model != null) {
                 model.forEach(context::setVariable);
+            }
+
+            if (templateName.contains("::")) {
+                String[] parts = templateName.split("::", 2);
+                String baseTemplate = parts[0].trim();
+                String fragment = parts[1].trim();
+                return templateEngine.process(baseTemplate, Collections.singleton(fragment), context);
             }
 
             return templateEngine.process(templateName, context);

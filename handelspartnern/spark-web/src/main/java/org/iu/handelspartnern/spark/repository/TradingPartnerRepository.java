@@ -91,4 +91,11 @@ public class TradingPartnerRepository {
             return query.uniqueResult();
         }
     }
+
+    public boolean existsById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            TradingPartner partner = session.get(TradingPartner.class, id);
+            return partner != null;
+        }
+    }
 }
