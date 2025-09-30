@@ -14,10 +14,14 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <hibernate.version>5.6.14.Final</hibernate.version>
         <jakarta.persistence.version>2.2.3</jakarta.persistence.version>
         <jackson.version>2.15.2</jackson.version>
+
+        <!-- License Plugin -->
+        <license.plugin.version>2.0.0</license.plugin.version>
+        <!-- CycloneDX Plugin -->
+        <cyclonedx.plugin.version>2.7.4</cyclonedx.plugin.version>
     </properties>
 
     <modules>
@@ -33,17 +37,17 @@
             <dependency>
                 <groupId>jakarta.persistence</groupId>
                 <artifactId>jakarta.persistence-api</artifactId>
-                <version>2.2.3</version>
+                <version>${jakarta.persistence.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>5.6.14.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.15.2</version>
+                <version>${jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -162,6 +166,49 @@
                             <sources>
                                 <source>src/main/java</source>
                             </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>aggregate-third-party</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>aggregate-add-third-party</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/docs/licenses</outputDirectory>
+                            <outputFormats>txt,xml,html</outputFormats>
+                            <header>${project.basedir}/LICENSE-HEADER.txt</header>
+                            <aggregateModules>true</aggregateModules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- CycloneDX BOM Plugin -->
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>${cyclonedx.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>make-aggregate-bom</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>makeAggregateBom</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/docs/licenses</outputDirectory>
+                            <outputFormat>spdx,cyclonedx</outputFormat>
+                            <includeLicenseText>true</includeLicenseText>
+                            <aggregateProject>true</aggregateProject>
                         </configuration>
                     </execution>
                 </executions>
