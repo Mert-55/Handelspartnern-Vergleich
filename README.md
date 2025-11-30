@@ -264,7 +264,7 @@ Dieses Projekt ist unter der [MIT-Lizenz](LICENSE) lizenziert.
 ## 🔗 Weiterführende Links
 
 - [Spring Boot Dokumentation](https://docs.spring.io/spring-boot/docs/current/reference/html/)
-- [Spark Java Dokumentation](https://sparkjava. com/documentation)
+- [Spark Java Dokumentation](https://sparkjava.com/documentation)
 - [Thymeleaf](https://www.thymeleaf.org/)
 - [GitHub Actions Metriken](https://docs.github.com/en/actions/concepts/metrics)
 
